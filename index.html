@@ -11,8 +11,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   
+  <!-- Theme Init Script (Must be in head to avoid flash of theme style) -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      }
+    })();
+  </script>
+  
   <!-- CSS Styles -->
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=3">
 </head>
 <body>
   
@@ -92,6 +105,24 @@
           <span class="lang-btn active">EN</span>
           <span class="lang-btn">中</span>
         </div>
+        <button id="theme-toggle" class="action-btn-circle" title="Toggle Theme" data-i18n-title="header.themeTooltip">
+          <!-- Sun Icon (shows in dark mode) -->
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/>
+            <path d="M12 20v2"/>
+            <path d="M4.93 4.93l1.41 1.41"/>
+            <path d="M17.66 17.66l1.41 1.41"/>
+            <path d="M2 12h2"/>
+            <path d="M20 12h2"/>
+            <path d="M6.34 17.66l-1.41 1.41"/>
+            <path d="M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <!-- Moon Icon (shows in light mode) -->
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
         <div class="email-pill">
           <span class="email-text">moss104088@gmail.com</span>
           <button class="action-btn-circle" title="Contact Email" data-i18n-title="header.emailTooltip">
@@ -159,7 +190,7 @@
                                 <!-- Symmetrical Dual Location Card -->
         <div class="glass-card location-card" style="min-height: 260px;">
           <!-- Location Headers (Stacked at top left) -->
-          <div style="display: flex; flex-direction: column; gap: 8px; z-index: 1;">
+          <div style="display: flex; flex-direction: column; gap: 18px; z-index: 1;">
             <div class="location-header">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
@@ -435,67 +466,120 @@
             </svg>
           </div>
         </div>
+
+        <!-- Interactive Design Gallery Card -->
+        <div class="glass-card photo-browser-card" style="min-height: 400px;">
+          <div class="dial-header" style="align-items: flex-start;">
+            <div>
+              <h3 data-i18n="dash.galleryTitle">Design Gallery</h3>
+              <div class="dial-instruction">
+                <svg class="spin-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/>
+                </svg>
+                <span data-i18n="dash.galleryInstruction">Hold and spin</span>
+              </div>
+            </div>
+            <div class="dial-counter"><span id="dial-current-index">1</span> / 20</div>
+          </div>
+          
+          <div class="dial-core-wrapper" id="photo-dial-wrapper">
+            <!-- Aurora Glow rotating container -->
+            <div class="aurora-ring-container" id="aurora-ring-container">
+              <div class="aurora-conic"></div>
+              <div class="aurora-peak"></div>
+            </div>
+
+            <!-- Inner Photo Circle -->
+            <div class="inner-photo-circle">
+              <div class="dial-photo-slides" id="dial-photo-slides">
+                <!-- Photos generated dynamically by JS -->
+              </div>
+            </div>
+            
+            <!-- Invisible interaction overlay -->
+            <div class="dial-touch-overlay" id="dial-touch-overlay"></div>
+          </div>
+        </div>
       </div>
 
       <div class="dashboard-grid">
         
-        <!-- Left Column: GPA Profile & Test / Competitions -->
-        <div style="display: flex; flex-direction: column; gap: 32px;">
-          <!-- GPA History & Projections -->
-          <div class="glass-card">
-            <h3 data-i18n="acad.gpaHistory">GPA Profile History</h3>
-            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 12px;" data-i18n="acad.gpaSub">Overview of yearly grades and credits (G11 represents projected outcomes):</p>
-            <table>
-              <thead>
-                <tr>
-                  <th data-i18n="acad.yearCol">Academic Year</th>
-                  <th data-i18n="acad.gpaCol">GPA (UW)</th>
-                  <th data-i18n="acad.creditsCol">Credits</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong data-i18n="acad.grade9">9th Grade</strong></td>
-                  <td data-label="GPA (UW)" data-i18n-label="acad.gpaCol">3.85</td>
-                  <td data-label="Credits" data-i18n-label="acad.creditsCol">12.75</td>
-                </tr>
-                <tr>
-                  <td><strong data-i18n="acad.grade10">10th Grade</strong></td>
-                  <td data-label="GPA (UW)" data-i18n-label="acad.gpaCol">3.71</td>
-                  <td data-label="Credits" data-i18n-label="acad.creditsCol">13.00</td>
-                </tr>
-                <tr>
-                  <td><strong data-i18n="acad.grade11">11th Grade (Estimated)</strong></td>
-                  <td data-label="GPA (UW)" data-i18n-label="acad.gpaCol">3.71</td>
-                  <td data-label="Credits" data-i18n-label="acad.creditsCol">7.00</td>
-                </tr>
-                <tr style="border-top: 2px solid rgba(0,0,0,0.08); font-weight: bold;">
-                  <td data-i18n="acad.cumulative">Cumulative GPA</td>
-                  <td data-label="GPA (UW)" data-i18n-label="acad.gpaCol">3.76</td>
-                  <td data-label="Credits" data-i18n-label="acad.creditsCol">25.75</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <!-- Left Column: Unified Academic Stats Panel -->
+        <div style="display: flex; flex-direction: column; gap: 0;">
+          <div class="glass-card dash-stats-panel">
 
-          <!-- Competitions & Standardized Tests -->
-          <div class="glass-card">
-            <h3 data-i18n="acad.compTests">Competitions & Standardized Tests</h3>
-            
-            <!-- USACO Badge -->
-            <div class="toefl-node" style="margin-bottom: 16px;">
-              <div>
-                <strong style="display: block; font-size: 0.95rem;" data-i18n="acad.usacoTitle">USACO (Computing Olympiad)</strong>
-                <span style="font-size: 0.8rem; color: var(--text-secondary);" data-i18n="acad.usacoSub">Bronze Division Qualified</span>
+            <!-- === GPA HERO === -->
+            <div class="stats-section">
+              <div class="stats-section-label" data-i18n="acad.cumulative">Cumulative GPA</div>
+              <div class="gpa-hero-row">
+                <div class="gpa-hero-number">3.76</div>
+                <div class="gpa-year-chips">
+                  <div class="gpa-year-chip">
+                    <span class="gpa-year-chip-grade" data-i18n="acad.grade9">G9</span>
+                    <span class="gpa-year-chip-val">3.85</span>
+                  </div>
+                  <div class="gpa-year-chip">
+                    <span class="gpa-year-chip-grade" data-i18n="acad.grade10">G10</span>
+                    <span class="gpa-year-chip-val">3.71</span>
+                  </div>
+                  <div class="gpa-year-chip gpa-year-chip-estimated">
+                    <span class="gpa-year-chip-grade">G11 ~</span>
+                    <span class="gpa-year-chip-val">3.71</span>
+                  </div>
+                </div>
               </div>
-              <span class="badge-gt" style="background: var(--card-dark); color: #fff;" data-i18n="acad.promoted">PROMOTED</span>
             </div>
 
-            <!-- TOEFL progress -->
-            <h4 style="font-size: 0.9rem; margin-bottom: 10px;" data-i18n="acad.toeflScoreboard">TOEFL Scoreboard</h4>
-            <div class="toefl-track toefl-track-dynamic">
-              <!-- Rendered by JS -->
+            <div class="stats-divider"></div>
+
+            <!-- === TOEFL CURRENT BEST === -->
+            <div class="stats-section">
+              <div class="stats-section-label" data-i18n="dash.bestToefl">Best TOEFL</div>
+              <div class="toefl-hero-row">
+                <div class="toefl-hero-total">102</div>
+                <div class="toefl-hero-breakdown">
+                  <div class="toefl-hero-chip"><span class="toefl-chip-letter">R</span><span class="toefl-chip-score">24</span></div>
+                  <div class="toefl-hero-chip"><span class="toefl-chip-letter">L</span><span class="toefl-chip-score">26</span></div>
+                  <div class="toefl-hero-chip"><span class="toefl-chip-letter">S</span><span class="toefl-chip-score">26</span></div>
+                  <div class="toefl-hero-chip"><span class="toefl-chip-letter">W</span><span class="toefl-chip-score">24</span></div>
+                </div>
+                <div class="toefl-hero-meta">
+                  <span class="toefl-hero-date">Dec 2025</span>
+                  <span class="toefl-hero-target" data-i18n="dash.toeflTarget">Target: 108–110</span>
+                </div>
+              </div>
             </div>
+
+            <div class="stats-divider"></div>
+
+            <!-- === COURSE GRADES === -->
+            <div class="stats-section">
+              <div class="stats-section-label" data-i18n="acad.course1011">Course Results</div>
+              <div class="course-grades-list" id="dash-course-grades">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <div class="stats-divider"></div>
+
+            <!-- === VOLUNTEER HOURS === -->
+            <div class="stats-section">
+              <div class="stats-section-label" data-i18n="dash.volunteering">Volunteering</div>
+              <div class="volunteer-hero-row">
+                <div class="volunteer-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </div>
+                <div class="volunteer-text">
+                  <span class="volunteer-hours-num">100+</span>
+                  <span class="volunteer-hours-label" data-i18n="time.volunteerLog">Volunteer Hours</span>
+                </div>
+                <div class="volunteer-orgs-count">
+                  <span class="volunteer-org-num">7</span>
+                  <span class="volunteer-org-label" data-i18n="dash.volunteerOrgs">Organizations</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -665,7 +749,7 @@
   </main>
 
   <!-- JS Scripts -->
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/data.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
 </body>
 </html>

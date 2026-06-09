@@ -18,7 +18,7 @@ const PORTFOLIO_DATA = {
       {
         id: "personal-web",
         title: "Personal Portfolio Website",
-        category: "tech",
+        category: ["tech", "ux"],
         tags: ["HTML/CSS/JS", "HCI Portfolio", "Responsive Design"],
         description: "Designed and built a custom, agency-free portfolio from scratch to showcase academic projects and UX research work.",
         highlights: [
@@ -29,8 +29,8 @@ const PORTFOLIO_DATA = {
       {
         id: "usaco",
         title: "USACO Bronze Division promotion",
-        category: "tech",
-        tags: ["Algorithms", "C++ / Java", "Competitive Programming"],
+        category: ["tech"],
+        tags: ["Algorithms", "Java", "Competitive Programming"],
         description: "Successfully promoted to Bronze level in the USACO (USA Computing Olympiad) testing algorithmic problem solving.",
         highlights: [
           "Advanced through initial levels demonstrating strong foundation in computing foundations",
@@ -40,7 +40,7 @@ const PORTFOLIO_DATA = {
       {
         id: "tianhe-ux",
         title: "Fashion Tianhe Signage System Optimization",
-        category: "ux",
+        category: ["ux"],
         tags: ["Wayfinding Systems", "User Research", "Interaction Prototyping"],
         description: "A comprehensive UX case study investigating the complex wayfinding system of Guangzhou's largest underground mall, Fashion Tianhe.",
         highlights: [
@@ -52,7 +52,7 @@ const PORTFOLIO_DATA = {
       {
         id: "gz-traffic-video",
         title: "Guangzhou Congestion: Are Electric Scooters to Blame?",
-        category: "ux",
+        category: ["humanities", "ux"],
         tags: ["Urban Sociology", "Data Analysis", "Bilibili Video Essay"],
         description: "A popular science video essay mapping urban space usage and social behaviors in relation to traffic congestion, gaining 50,000+ views on Bilibili.",
         highlights: [
@@ -63,9 +63,9 @@ const PORTFOLIO_DATA = {
       {
         id: "youth-league-video",
         title: "Youth League Recruitment Motivation Study",
-        category: "humanities",
+        category: ["humanities"],
         tags: ["Social Research", "Qualitative Survey", "Bilibili Video Essay"],
-        description: "A sociological research video essay examining the underlying motivations of high school students joining the Communist Youth League, reaching 100,000+ views on Bilibili.",
+        description: "A sociological research video essay examining the underlying motivations of high school students joining the Communist Youth League, reaching 100,000+ views online.",
         highlights: [
           "Conducted student interviews and analyzed patterns of motivation and institutional participation",
           "Synthesized findings into an accessible video format that went viral in the student community"
@@ -74,7 +74,7 @@ const PORTFOLIO_DATA = {
       {
         id: "script-killing-intern",
         title: "MBTI Match & Romance Index AI Model Design",
-        category: "leadership",
+        category: ["leadership"],
         tags: ["Product Design", "User Psychology", "AI Framework", "Cross-team Leadership"],
         description: "Interned at an innovative script-killing company targeting young demographics. Structured MBTI and matchmaking analytics models.",
         highlights: [
@@ -86,7 +86,7 @@ const PORTFOLIO_DATA = {
       {
         id: "xia-zao-film",
         title: "Short Film: 'Summer Noise' (夏噪)",
-        category: "leadership",
+        category: ["humanities", "leadership"],
         tags: ["Directing", "Project Coordination", "Cinematography"],
         description: "Directed an atmospheric short film, coordinating schedules, cinematography, and logistics across school departments. Gained 70,000+ online views.",
         highlights: [
@@ -97,7 +97,7 @@ const PORTFOLIO_DATA = {
       {
         id: "chschat-xyz",
         title: "CHSchat.xyz - Centennial HS Hub",
-        category: "leadership",
+        category: ["tech", "humanities", "leadership"],
         tags: ["Web Dev", "Custom Tools", "Campus Media"],
         description: "Developed and launched CHSchat.xyz, a customized hub integrating utility tools, school news, and communication tools for Centennial High School.",
         highlights: [
@@ -108,12 +108,23 @@ const PORTFOLIO_DATA = {
       {
         id: "tedx-organizer",
         title: "TEDx Youth Event Organizer",
-        category: "other",
+        category: ["leadership"],
         tags: ["Event Planning", "Licensing", "Public Speaking"],
         description: "Leading the licensing, speaker curation, and event execution of a TEDx youth event planned for December 2026.",
         highlights: [
           "Managing licensing applications with TED organization in New York",
           "Coordinating team structures and venue logistics ahead of the event"
+        ]
+      },
+      {
+        id: "badminton-club",
+        title: "Centennial Badminton Club Co-President",
+        category: ["leadership"],
+        tags: ["Club Operations", "Event Planning", "Team Leadership"],
+        description: "Serving as the Co-President of the Centennial Badminton Club, managing daily operations, practice sessions, and organizing intramural tournaments.",
+        highlights: [
+          "Organized club tournaments, attracting active members and enriching campus athletic culture",
+          "Managed practice schedules and court logistics, fostering skills development and team cohesion"
         ]
       }
     ],
@@ -180,7 +191,7 @@ const PORTFOLIO_DATA = {
       {
         id: "personal-web",
         title: "个人作品集网站",
-        category: "tech",
+        category: ["tech", "ux"],
         tags: ["HTML/CSS/JS", "人机交互作品集", "响应式设计"],
         description: "从零设计并搭建个人作品集网站，不依赖任何第三方机构，展示学术项目及用户体验（UX）研究成果。",
         highlights: [
@@ -191,8 +202,8 @@ const PORTFOLIO_DATA = {
       {
         id: "usaco",
         title: "USACO 铜牌组晋级",
-        category: "tech",
-        tags: ["算法", "C++ / Java", "算法竞赛"],
+        category: ["tech"],
+        tags: ["算法", "Java", "算法竞赛"],
         description: "在USACO（美国计算机奥林匹克竞赛）中测试算法问题解决能力，并成功晋级铜牌组。",
         highlights: [
           "通过初级关卡，展现了扎实的计算基础",
@@ -202,7 +213,7 @@ const PORTFOLIO_DATA = {
       {
         id: "tianhe-ux",
         title: "时尚天河导视系统优化研究",
-        category: "ux",
+        category: ["ux"],
         tags: ["导视系统", "用户研究", "交互原型设计"],
         description: "针对广州最大的地下商场——时尚天河复杂的导视系统，进行了一项全面的用户体验（UX）案例研究。",
         highlights: [
@@ -214,7 +225,7 @@ const PORTFOLIO_DATA = {
       {
         id: "gz-traffic-video",
         title: "B站视频-广州拥堵真的是电动车导致的吗？",
-        category: "ux",
+        category: ["humanities", "ux"],
         tags: ["城市社会学", "数据分析", "B站视频短片"],
         description: "一部探讨城市空间利用、社会行为与交通拥堵关联的科普类视频短片，在B站获得5万+播放量。",
         highlights: [
@@ -225,9 +236,9 @@ const PORTFOLIO_DATA = {
       {
         id: "youth-league-video",
         title: "B站视频-学生加入共青团的动机研究",
-        category: "humanities",
+        category: ["humanities"],
         tags: ["社会学研究", "定性调查", "B站视频短片"],
-        description: "一项考察高中生加入共青团底层动机的社会学研究视频短片，在B站达到10万+播放量。",
+        description: "一项考察高中生加入共青团底层动机的社会学研究视频短片，网络播放量达到10万+播放量。",
         highlights: [
           "开展学生访谈，分析动机模式与组织参与度",
           "将研究结果整理成通俗易懂的视频形式，在学生群体中广泛传播"
@@ -236,7 +247,7 @@ const PORTFOLIO_DATA = {
       {
         id: "script-killing-intern",
         title: "实习项目：MBTI 匹配与恋爱风险指数 AI 模型设计",
-        category: "leadership",
+        category: ["leadership"],
         tags: ["产品设计", "用户心理学", "AI框架", "跨团队领导力"],
         description: "在一家以非典型剧本杀吸引年轻玩家、促成配对的公司实习，负责设计分析模型以推测玩家MBTI及恋爱风险指数。",
         highlights: [
@@ -248,7 +259,7 @@ const PORTFOLIO_DATA = {
       {
         id: "xia-zao-film",
         title: "情绪短片《夏噪》",
-        category: "leadership",
+        category: ["humanities", "leadership"],
         tags: ["导演", "项目统筹", "摄影"],
         description: "执导一部充满氛围感的情绪短片《夏噪》，协调演员档期并统筹各部门工作，网络播放量达7万+。",
         highlights: [
@@ -259,7 +270,7 @@ const PORTFOLIO_DATA = {
       {
         id: "chschat-xyz",
         title: "为Centennial创建CHSchat.xyz",
-        category: "leadership",
+        category: ["tech", "humanities", "leadership"],
         tags: ["网页开发", "定制工具", "校园媒介"],
         description: "为Centennial High School开发并发布了CHSchat.xyz，这是一个集定制化工具、校园新闻与日常沟通为一体的网站。",
         highlights: [
@@ -270,12 +281,23 @@ const PORTFOLIO_DATA = {
       {
         id: "tedx-organizer",
         title: "TEDx 活动主办与筹办",
-        category: "other",
+        category: ["leadership"],
         tags: ["活动策划", "牌照申请", "公共演讲"],
         description: "作为主要承办人，负责筹备将于2026年12月举办的TEDx青年活动，包括牌照申请、讲者筛选和活动落地。",
         highlights: [
           "与纽约TED总部直接对接并管理牌照申请流程",
           "在活动开始前统筹团队架构和场地物流工作"
+        ]
+      },
+      {
+        id: "badminton-club",
+        title: "Centennial Badminton Club",
+        category: ["leadership"],
+        tags: ["俱乐部运营", "活动策划", "团队领导力"],
+        description: "作为Co-President，日常管理羽毛球俱乐部，负责组织训练、内部选拔以及校内羽毛球赛事的筹办与推广。",
+        highlights: [
+          "组织并筹办校内羽毛球赛事，为社员提供竞技与交流的平台",
+          "统筹日常训练计划，合理调配场地资源，提升社团凝聚力"
         ]
       }
     ],

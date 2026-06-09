@@ -19,13 +19,15 @@ const UI_TRANSLATIONS = {
     "nav.projectsMobile": "Projects",
     "nav.timeline": "Timeline",
     "header.emailTooltip": "Contact Email",
+    "header.themeTooltip": "Toggle Color Theme",
     "dash.introTitle": "Hi, I'm Lingqi!",
     "dash.introBullet1": "Student at Centennial High School, MD.",
     "dash.introBullet2": "Passionate about Human-Computer Interaction (HCI) with a strong focus on UI/UX research and web technology.",
     "dash.introBullet3": "Rejects template frameworks to design and build custom user interfaces and digital experiences.",
     "dash.introBullet4": "Currently investigating urban navigation systems, AI model design, and interactive products.",
     "dash.locationText": "Centennial High School, MD",
-    "dash.locationGuangzhou": "Guangzhou, China",
+    "dash.locationZhiXin": "ZhiXin High School,<br>Guangzhou, China",
+    "dash.locationBNU": "Guangzhou Experimental School, Affiliated To BNU, China",
     "dash.profileIndex": "Admissions & Profile Index",
     "dash.primaryMajor": "Primary Major Target",
     "dash.secondaryFocus": "Secondary Focus",
@@ -62,7 +64,11 @@ const UI_TRANSLATIONS = {
     "proj.leadership": "Innovation & Leadership",
     "proj.other": "Other Events",
     "time.volunteerLog": "100h Volunteering Log",
-    "time.milestones": "Milestone Checklist"
+    "time.milestones": "Milestone Checklist",
+    "dash.toeflTarget": "Target: 108–110",
+    "dash.volunteerOrgs": "Organizations",
+    "dash.galleryTitle": "Design Gallery",
+    "dash.galleryInstruction": "Hold and spin"
   },
   zh: {
     "header.subtitle": "个人网站",
@@ -72,13 +78,15 @@ const UI_TRANSLATIONS = {
     "nav.projectsMobile": "项目",
     "nav.timeline": "时间线",
     "header.emailTooltip": "联系邮箱",
+    "header.themeTooltip": "切换深浅色主题",
     "dash.introTitle": "你好，我是莫令琪！",
     "dash.introBullet1": "就读于 Centennial High School, MD。",
     "dash.introBullet2": "热衷于人机交互 (HCI) 领域，专注于用户体验研究与前端技术。",
     "dash.introBullet3": "拒绝套用模板框架，热衷于设计与开发独特的数字化用户界面。",
     "dash.introBullet4": "正在开展有关城市导视系统优化、AI 匹配模型及校园社区工具的实践。",
-    "dash.locationText": "马里兰州 Centennial High School, MD",
-    "dash.locationGuangzhou": "中国 广州",
+    "dash.locationText": "美国马里兰州<br>Centennial High School",
+    "dash.locationZhiXin": "广州市执信中学国际部",
+    "dash.locationBNU": "北京师范大学广州实验学校",
     "dash.profileIndex": "录取与个人档案指标",
     "dash.primaryMajor": "主申专业方向",
     "dash.secondaryFocus": "细分/次要方向",
@@ -115,7 +123,11 @@ const UI_TRANSLATIONS = {
     "proj.leadership": "创新与领导力",
     "proj.other": "其他活动",
     "time.volunteerLog": "100小时志愿服务日志",
-    "time.milestones": "规划执行里程碑清单"
+    "time.milestones": "规划执行里程碑清单",
+    "dash.toeflTarget": "目标：108–110",
+    "dash.volunteerOrgs": "机构",
+    "dash.galleryTitle": "设计画廊",
+    "dash.galleryInstruction": "按住光晕旋转"
   }
 };
 
@@ -140,7 +152,8 @@ function initAll() {
     { name: 'Projects', fn: initProjects },
     { name: 'Academics', fn: initAcademics },
     { name: 'VolunteeringAndTimeline', fn: initVolunteeringAndTimeline },
-    { name: 'EmailPill', fn: initEmailPill }
+    { name: 'EmailPill', fn: initEmailPill },
+    { name: 'ThemeToggle', fn: initThemeToggle }
   ];
 
   initializers.forEach(item => {
@@ -163,6 +176,11 @@ function initNavigation() {
   const tabs = document.querySelectorAll('.nav-tab');
   const sections = document.querySelectorAll('.tab-content');
   const activePill = document.querySelector('.nav-active-pill');
+  const mainContent = document.querySelector('.main-content');
+  
+  // Tab order to determine direction
+  const tabOrder = ['dashboard', 'academic', 'projects', 'timeline'];
+  let isTransitioning = false;
 
   function updateActivePill() {
     const activeTab = document.querySelector('.nav-tab.active');
@@ -178,21 +196,54 @@ function initNavigation() {
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
+      if (isTransitioning) return;
+
       const targetTab = tab.getAttribute('data-tab');
-      
+      const activeTabBtn = document.querySelector('.nav-tab.active');
+      const currentTab = activeTabBtn ? activeTabBtn.getAttribute('data-tab') : null;
+
+      if (currentTab === targetTab) return;
+
+      isTransitioning = true;
+
+      const currentIndex = tabOrder.indexOf(currentTab);
+      const targetIndex = tabOrder.indexOf(targetTab);
+      const direction = targetIndex > currentIndex ? 'forward' : 'backward';
+
+      // 1. Mark active tab button immediately
       tabs.forEach(t => t.classList.remove('active'));
-      sections.forEach(s => s.classList.remove('active'));
-      
       tab.classList.add('active');
+
+      const currentSection = document.getElementById(currentTab);
       const targetSection = document.getElementById(targetTab);
-      if (targetSection) {
-        targetSection.classList.add('active');
+
+      if (currentSection && targetSection) {
+        // 2. Set up transition direction and active classes
+        mainContent.classList.add('transitioning', direction);
+        currentSection.classList.add('leaving');
+        targetSection.classList.add('active', 'entering');
+
+        // Scroll to the true top of the page when changing tabs so coordinates align
+        window.scrollTo(0, 0);
+
+        // 3. Wait for the 3D globe animation (800ms) to complete
+        setTimeout(() => {
+          currentSection.classList.remove('active', 'leaving');
+          targetSection.classList.remove('entering');
+          mainContent.classList.remove('transitioning', 'forward', 'backward');
+          isTransitioning = false;
+        }, 800);
+      } else {
+        // Fallback if elements do not exist
+        sections.forEach(s => s.classList.remove('active'));
+        if (targetSection) {
+          targetSection.classList.add('active');
+        }
+        window.scrollTo(0, 0);
+        isTransitioning = false;
       }
-      
-      // Scroll to the true top of the page when changing tabs
-      window.scrollTo(0, 0);
-      
-      // Defer calculation slightly to let browser complete flexbox layout reflows
+
+      // Defer pill calculation slightly to let browser complete flexbox layout reflows
       setTimeout(updateActivePill, 20);
     });
   });
@@ -278,7 +329,7 @@ function updateStaticTexts(lang) {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (dict[key]) {
-      el.textContent = dict[key];
+      el.innerHTML = dict[key];
     }
   });
 
@@ -301,7 +352,31 @@ function updateStaticTexts(lang) {
 
 // Overview Dashboard Initializer
 function initDashboard() {
-  // Static content and sub-initializers handle rendering
+  renderDashCourseGrades();
+  initDesignGallery();
+}
+
+function renderDashCourseGrades() {
+  const dashCourseList = document.getElementById('dash-course-grades');
+  if (!dashCourseList) return;
+
+  const activeData = getActiveData();
+  const courses = activeData.courses.g10g11;
+
+  dashCourseList.innerHTML = courses.map(c => {
+    // Extract the letter grade (A or B) from the grade string
+    const rawGrade = c.grade.charAt(0).toUpperCase();
+    const gradeClass = rawGrade === 'A' ? 'grade-a' : (rawGrade === 'B' ? 'grade-b' : '');
+    return `
+      <div class="course-grade-row">
+        <span class="course-grade-name">${c.name}</span>
+        <div class="course-grade-right">
+          <span class="course-grade-badge">${c.level}</span>
+          <span class="course-grade-score ${gradeClass}">${rawGrade}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 // Project Portfolio Section Initializer
@@ -328,21 +403,34 @@ function initProjects() {
       const currentActiveData = getActiveData();
       const filtered = category === 'all' 
         ? currentActiveData.projects 
-        : currentActiveData.projects.filter(p => p.category === category);
+        : currentActiveData.projects.filter(p => {
+            if (Array.isArray(p.category)) {
+              return p.category.includes(category);
+            }
+            return p.category === category;
+          });
 
-      grid.innerHTML = filtered.map(p => `
-        <div class="glass-card project-card" data-category="${p.category}">
-          <div class="project-category" data-i18n="proj.${p.category}">${UI_TRANSLATIONS[currentLang]["proj." + p.category] || p.category}</div>
-          <h3>${p.title}</h3>
-          <p>${p.description}</p>
-          <div class="project-tags">
-            ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
+      grid.innerHTML = filtered.map(p => {
+        const categoryList = Array.isArray(p.category) ? p.category : [p.category];
+        const categoryText = categoryList
+          .map(cat => UI_TRANSLATIONS[currentLang]["proj." + cat] || cat)
+          .join(" + ");
+        const dataCat = categoryList.join(" ");
+
+        return `
+          <div class="glass-card project-card" data-category="${dataCat}">
+            <div class="project-category">${categoryText}</div>
+            <h3>${p.title}</h3>
+            <p>${p.description}</p>
+            <div class="project-tags">
+              ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
+            </div>
+            <ul class="project-highlights">
+              ${p.highlights.map(h => `<li>${h}</li>`).join('')}
+            </ul>
           </div>
-          <ul class="project-highlights">
-            ${p.highlights.map(h => `<li>${h}</li>`).join('')}
-          </ul>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // Setup click handlers for filters
@@ -468,3 +556,187 @@ function initEmailPill() {
     });
   }
 }
+
+// Theme Toggle Handler
+function initThemeToggle() {
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+}
+
+// Design Gallery Dial Browser Data and Logic
+const DIAL_PHOTOS = [
+  { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80", caption_en: "Modernist Villa - Integration of Light & Form", caption_zh: "现代主义别墅 - 光与影的融合" },
+  { url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80", caption_en: "Minimalist Abstract Geometry - Glassmorphism", caption_zh: "极简抽象几何 - 玻璃态质感" },
+  { url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80", caption_en: "Organic Sand Textures - Natural Fluidity", caption_zh: "有机沙丘纹理 - 自然流体学" },
+  { url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80", caption_en: "Terracotta Courtyard - Warm Light Study", caption_zh: "红土庭院 - 暖色调光影研究" },
+  { url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80", caption_en: "Collaborative UI/UX Workspace Design", caption_zh: "协作式 UI/UX 工作空间设计" },
+  { url: "https://images.unsplash.com/photo-1545235617-9465d2a55698?auto=format&fit=crop&w=400&q=80", caption_en: "Human-Centered Mobile App Prototype", caption_zh: "以人为本的移动端交互原型" },
+  { url: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=400&q=80", caption_en: "Interactive Tangible UI Component", caption_zh: "实体交互界面组件设计" },
+  { url: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=400&q=80", caption_en: "Heuristic Evaluation of Urban Navigation", caption_zh: "城市导视系统的启发式评估" },
+  { url: "https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?auto=format&fit=crop&w=400&q=80", caption_en: "Fluid Motion & Responsive Layout Design", caption_zh: "动态流体与响应式布局设计" },
+  { url: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=400&q=80", caption_en: "Wireframing & Information Architecture", caption_zh: "线框图与信息架构规划" },
+  { url: "https://images.unsplash.com/photo-1541462608143-67571c6738dd?auto=format&fit=crop&w=400&q=80", caption_en: "Typography & Harmonious Grid Systems", caption_zh: "排版美学与和谐网格系统" },
+  { url: "https://images.unsplash.com/photo-1618005198143-e5283b519a7f?auto=format&fit=crop&w=400&q=80", caption_en: "Claymorphic Material Shader - Warm Tone", caption_zh: "黏土态材质着色器 - 暖色调" },
+  { url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80", caption_en: "Biophilic Design - Plants & Natural Light", caption_zh: "亲生物性设计 - 植被与采光" },
+  { url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=400&q=80", caption_en: "Warm Oak & Cream Interior Concept", caption_zh: "温润橡木与奶油色室内概念" },
+  { url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80", caption_en: "Minimalist Product Photography - Shadows", caption_zh: "极简产品摄影 - 投影构图" },
+  { url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80", caption_en: "Structural Architecture & Geometric Angles", caption_zh: "结构建筑学与几何线条" },
+  { url: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=400&q=80", caption_en: "Web Development - HTML5 / Vanilla CSS", caption_zh: "网页开发 - 原生 HTML5 & CSS" },
+  { url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80", caption_en: "Data Visualization & Dashboard UI", caption_zh: "数据可视化与仪表盘用户界面" },
+  { url: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=400&q=80", caption_en: "Human Factors & Ergonomic Engineering", caption_zh: "人机工程与可用性测试" },
+  { url: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=400&q=80", caption_en: "Digital Art - Sculpted Clay Forms", caption_zh: "数字艺术 - 黏土微雕造型" }
+];
+
+function initDesignGallery() {
+  const slidesContainer = document.getElementById('dial-photo-slides');
+  const counterCurrentEl = document.getElementById('dial-current-index');
+  const dialWrapper = document.getElementById('photo-dial-wrapper');
+  const auroraRing = document.getElementById('aurora-ring-container');
+  const touchOverlay = document.getElementById('dial-touch-overlay');
+
+  if (!slidesContainer || !dialWrapper || !auroraRing || !touchOverlay) return;
+
+  let currentIndex = 0;
+  
+  // Drag/Scrub variables
+  let isDragging = false;
+  let prevAngle = 0;
+  let accumulatedAngle = 0;
+  
+  // 1. Generate images in the DOM
+  slidesContainer.innerHTML = DIAL_PHOTOS.map((photo, index) => {
+    return `<img src="${photo.url}" class="photo-slide ${index === 0 ? 'active' : ''}" data-index="${index}" alt="Gallery Image ${index + 1}" draggable="false">`;
+  }).join('');
+
+  function updateGalleryUI() {
+    if (counterCurrentEl) counterCurrentEl.textContent = currentIndex + 1;
+  }
+
+  // Initial UI Render
+  updateGalleryUI();
+
+  // 2. Tab translation function for photos
+  function switchPhoto(targetIndex, direction) {
+    if (targetIndex === currentIndex) return;
+
+    const slides = slidesContainer.querySelectorAll('.photo-slide');
+    const currentSlide = slides[currentIndex];
+    const targetSlide = slides[targetIndex];
+
+    // Reset previous animation classes
+    slides.forEach(s => {
+       s.classList.remove('active', 'leaving-ccw', 'entering-ccw', 'leaving-cw', 'entering-cw');
+    });
+
+    // Force DOM reflow so animations restart reliably during fast scrubbing
+    void slidesContainer.offsetWidth;
+
+    if (direction === 'ccw') {
+      // Counter-clockwise
+      currentSlide.classList.add('leaving-ccw');
+      targetSlide.classList.add('entering-ccw', 'active');
+    } else {
+      // Clockwise
+      currentSlide.classList.add('leaving-cw');
+      targetSlide.classList.add('entering-cw', 'active');
+    }
+
+    currentIndex = targetIndex;
+    updateGalleryUI();
+  }
+
+  // Helper: Get angle from pointer coordinate to dial center
+  function getPointerAngle(clientX, clientY) {
+    const rect = dialWrapper.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    // Math.atan2 returns angle in radians from -PI to PI
+    // Offset by 90deg so 12 o'clock is 0
+    let angle = Math.atan2(clientY - centerY, clientX - centerX) * (180 / Math.PI) + 90;
+    if (angle < 0) angle += 360;
+    return angle;
+  }
+
+  // Drag start
+  function onDragStart(clientX, clientY) {
+    isDragging = true;
+    auroraRing.style.transition = 'none'; // Instant feedback on drag move
+    prevAngle = getPointerAngle(clientX, clientY);
+  }
+
+  // Dragging
+  function onDragMove(clientX, clientY) {
+    if (!isDragging) return;
+    
+    const currentAngle = getPointerAngle(clientX, clientY);
+    let deltaAngle = currentAngle - prevAngle;
+    
+    // Handle wrap-around math to keep rotation continuous
+    if (deltaAngle < -180) deltaAngle += 360;
+    if (deltaAngle > 180) deltaAngle -= 360;
+
+    accumulatedAngle += deltaAngle;
+    prevAngle = currentAngle;
+    
+    // Rotate the aurora ring in real-time
+    auroraRing.style.transform = `rotate(${accumulatedAngle}deg)`;
+
+    // Calculate which photo we should be on based on continuous rotation
+    // 360 degrees / 20 photos = 18 degrees per photo
+    let targetIndex = Math.floor(accumulatedAngle / 18) % DIAL_PHOTOS.length;
+    if (targetIndex < 0) targetIndex += DIAL_PHOTOS.length; // Handle negative indices
+
+    if (targetIndex !== currentIndex) {
+      const direction = deltaAngle >= 0 ? 'cw' : 'ccw';
+      switchPhoto(targetIndex, direction);
+    }
+  }
+
+  // Drag release
+  function onDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    // Re-enable smooth transition
+    auroraRing.style.transition = 'transform 0.05s linear';
+  }
+
+  // Bind Mouse Events
+  touchOverlay.addEventListener('mousedown', (e) => {
+    onDragStart(e.clientX, e.clientY);
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    onDragMove(e.clientX, e.clientY);
+  });
+
+  window.addEventListener('mouseup', () => {
+    onDragEnd();
+  });
+
+  // Bind Touch Events
+  touchOverlay.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 0) {
+      onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchmove', (e) => {
+    if (isDragging && e.touches.length > 0) {
+      e.preventDefault(); // Prevent page scrolling while dragging
+      onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', () => {
+    onDragEnd();
+  });
+}
+
+

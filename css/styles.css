@@ -12,6 +12,14 @@
   
   --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  --action-btn-text: #fff;
+  --lang-btn-active-text: #fff;
+  
+  /* Design Gallery Aurora Colors */
+  --aurora-glow-1: rgba(222, 171, 137, 0.85); /* Glowing warm peach-amber */
+  --aurora-glow-2: rgba(186, 143, 119, 0.4);  /* Soft terracotta */
+  --aurora-bg: rgba(246, 238, 230, 0.8);
 }
 
 /* Global Reset */
@@ -97,18 +105,20 @@ header.container {
   max-width: 1152px;
   margin: 0 auto;
   width: 100%;
-  background: rgba(246, 238, 230, 0.45); /* Warm sand glass */
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid var(--glass-border);
+  background: #f1e6da; /* Solid Cream */
+  border: 1px solid rgba(186, 166, 149, 0.45);
   border-radius: 40px;
-  padding: 8px 20px;
+  padding: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  /* Premium iOS 26 layered shadow with double inset highlights (No hover movement) */
   box-shadow: 
-    0 16px 36px -8px rgba(100, 85, 75, 0.05),
-    0 1px 0px rgba(255, 255, 255, 0.3) inset;
+    0 30px 60px -15px rgba(100, 85, 75, 0.15),
+    0 12px 24px -8px rgba(100, 85, 75, 0.12),
+    0 4px 10px -4px rgba(100, 85, 75, 0.05),
+    0 1px 2px rgba(255, 255, 255, 0.9) inset,
+    0 -1px 1px rgba(0, 0, 0, 0.04) inset;
 }
 
 .logo-section {
@@ -118,15 +128,15 @@ header.container {
 }
 
 .profile-avatar {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: linear-gradient(135deg, #d4c0b0, #bfa28c);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 1.1rem;
+  font-weight: 700;
+  font-size: 0.85rem;
   color: #fff;
   border: 2px solid rgba(255, 255, 255, 0.4);
 }
@@ -241,7 +251,7 @@ nav {
 
 .lang-btn.active {
   background: var(--card-dark);
-  color: #fff;
+  color: var(--lang-btn-active-text, #fff);
 }
 
 .action-btn-circle {
@@ -249,7 +259,7 @@ nav {
   height: 38px;
   border-radius: 50%;
   background: var(--card-dark);
-  color: #fff;
+  color: var(--action-btn-text, #fff);
   border: none;
   outline: none;
   display: flex;
@@ -367,7 +377,7 @@ nav {
 
 .btn-pill-dark {
   background: var(--card-dark);
-  color: #fff;
+  color: var(--action-btn-text, #fff);
   border: none;
   padding: 14px 28px;
   border-radius: 30px;
@@ -468,11 +478,7 @@ nav {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-card:hover {
-  background-color: var(--card-bg-hover);
-  border-color: rgba(186, 166, 149, 0.45);
-  box-shadow: 0 30px 60px -15px rgba(100, 85, 75, 0.12);
-}
+
 
 /* Nested Card widgets (eliminates harsh white inline backgrounds) */
 .nested-card {
@@ -485,10 +491,7 @@ nav {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.nested-card:hover {
-  background: rgba(246, 238, 230, 0.7);
-  border-color: rgba(186, 166, 149, 0.45);
-}
+
 
 /* General Layout Dashboard */
 .dashboard-grid {
@@ -501,18 +504,159 @@ nav {
   grid-column: 1 / -1;
 }
 
+/* Container 3D Perspective Setup (Grid container keeps tabs aligned perfectly) */
+.main-content {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  perspective: 2000px;
+  perspective-origin: 50% 35%; /* Tilted perspective for a more pronounced 3D sphere rotation */
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+.main-content.transitioning {
+  overflow: hidden !important;
+  pointer-events: none;
+}
+
+/* Base Tab Content styles */
 .tab-content {
   display: none;
+  grid-area: 1 / 1 / 2 / 2; /* Layer all tabs on top of each other inside the same grid cell */
+  width: 100%;
+  align-self: start; /* Maintain natural heights and align at the top of the grid cell */
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .tab-content.active {
   display: block;
-  animation: fadeIn 0.4s ease-out;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Overrides during active transition to display both old and new tab contents */
+.main-content.transitioning .tab-content.active,
+.main-content.transitioning .tab-content.leaving,
+.main-content.transitioning .tab-content.entering {
+  display: block !important;
+}
+
+/* Rely entirely on 3D depth (translate3d Z axis) and DOM paint order for natural layering */
+.main-content.transitioning .tab-content.leaving {
+  /* No z-index to avoid WebKit 3D rendering engine conflicts */
+}
+
+.main-content.transitioning .tab-content.entering {
+  /* No z-index to avoid WebKit 3D rendering engine conflicts */
+}
+
+/* ==========================================================================
+   Globe-like 3D Transition Animations
+   ========================================================================== */
+
+/* Forward navigation (left to right): Old page swings out to left/bottom-left */
+.main-content.transitioning.forward .tab-content.leaving {
+  animation: globeRotateOutLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Forward navigation (left to right): New page swings in from right/bottom-right */
+.main-content.transitioning.forward .tab-content.entering {
+  animation: globeRotateInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Backward navigation (right to left): Old page swings out to right/bottom-right */
+.main-content.transitioning.backward .tab-content.leaving {
+  animation: globeRotateOutRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Backward navigation (right to left): New page swings in from left/bottom-left */
+.main-content.transitioning.backward .tab-content.entering {
+  animation: globeRotateInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 3D Keyframe Animations (Curves and Spherical Motion - rely on translate3d Z depth) */
+@keyframes globeRotateOutLeft {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+    transform-origin: 50% 150%;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-35%, 15%, -500px) rotateX(-8deg) rotateY(-40deg) rotateZ(-12deg) scale(0.8);
+    transform-origin: 50% 150%;
+  }
+}
+
+@keyframes globeRotateInRight {
+  0% {
+    opacity: 0;
+    transform: translate3d(35%, 15%, -500px) rotateX(-8deg) rotateY(40deg) rotateZ(12deg) scale(0.8);
+    transform-origin: 50% 150%;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+    transform-origin: 50% 150%;
+  }
+}
+
+@keyframes globeRotateOutRight {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+    transform-origin: 50% 150%;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(35%, 15%, -500px) rotateX(-8deg) rotateY(40deg) rotateZ(12deg) scale(0.8);
+    transform-origin: 50% 150%;
+  }
+}
+
+@keyframes globeRotateInLeft {
+  0% {
+    opacity: 0;
+    transform: translate3d(-35%, 15%, -500px) rotateX(-8deg) rotateY(-40deg) rotateZ(-12deg) scale(0.8);
+    transform-origin: 50% 150%;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+    transform-origin: 50% 150%;
+  }
+}
+
+/* Card Drifting Parallax Effect (Nested depth animation) */
+.main-content.transitioning.forward .tab-content.entering .glass-card {
+  animation: cardInRight 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.main-content.transitioning.backward .tab-content.entering .glass-card {
+  animation: cardInLeft 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardInRight {
+  0% {
+    transform: translate3d(40px, 10px, 50px) rotateY(12deg);
+    box-shadow: 0 40px 80px rgba(100, 85, 75, 0.2);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotateY(0);
+  }
+}
+
+@keyframes cardInLeft {
+  0% {
+    transform: translate3d(-40px, 10px, 50px) rotateY(-12deg);
+    box-shadow: 0 40px 80px rgba(100, 85, 75, 0.2);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotateY(0);
+  }
 }
 
 /* Academic Section Custom Theme */
@@ -568,7 +712,7 @@ nav {
 
 .simulated-gpa-box {
   background: var(--card-dark);
-  color: #fff;
+  color: var(--action-btn-text, #fff);
   border-radius: 20px;
   padding: 20px;
   text-align: center;
@@ -632,10 +776,7 @@ tr:last-child td {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.toefl-node:hover {
-  background: rgba(246, 238, 230, 0.6);
-  border-color: rgba(186, 166, 149, 0.45);
-}
+
 
 .toefl-node.target {
   background: rgba(246, 238, 230, 0.75);
@@ -683,9 +824,9 @@ tr:last-child td {
 }
 
 .filter-btn {
-  background: rgba(246, 238, 230, 0.5);
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
+  background: #decbbd;
+  border: 1px solid rgba(133, 116, 103, 0.3);
+  color: var(--text-primary);
   padding: 10px 22px;
   border-radius: 30px;
   cursor: pointer;
@@ -695,15 +836,19 @@ tr:last-child td {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.filter-btn:focus {
+  outline: none;
+}
+
 .filter-btn:hover {
-  background: rgba(246, 238, 230, 0.85);
+  background: #ecdcd0;
   color: var(--text-primary);
 }
 
 .filter-btn.active {
   background: var(--card-dark);
   border-color: transparent;
-  color: #fff;
+  color: var(--action-btn-text, #fff);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -843,14 +988,11 @@ tr:last-child td {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.volunteering-item:hover {
-  background: rgba(246, 238, 230, 0.6);
-  border-color: rgba(186, 166, 149, 0.45);
-}
+
 
 .volunteering-hours {
   background: var(--card-dark);
-  color: #fff;
+  color: var(--action-btn-text, #fff);
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -863,7 +1005,7 @@ tr:last-child td {
 /* Dashboard Hero Profile Section */
 .dashboard-hero {
   display: grid;
-  grid-template-columns: 1.40fr 1fr;
+  grid-template-columns: 1.25fr 1fr 1fr; /* Symmetrical three columns horizontally */
   gap: 32px;
   margin-bottom: 32px;
 }
@@ -925,20 +1067,22 @@ tr:last-child td {
 
 .location-header {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 12px;
   z-index: 1;
+  line-height: 1.5;
 }
 
 .location-header svg {
   color: var(--text-primary);
   flex-shrink: 0;
+  margin-top: 3px;
 }
 
 .globe-container {
   position: absolute;
-  bottom: -45px;
-  right: -25px;
+  bottom: -62px;
+  right: -42px;
   width: 240px;
   height: 240px;
   pointer-events: none;
@@ -1003,7 +1147,7 @@ tr:last-child td {
   }
   
   .header-wrapper {
-    padding: 6px 12px;
+    padding: 8px;
     border-radius: 24px;
     flex-direction: row;
     justify-content: space-between;
@@ -1196,3 +1340,667 @@ tr:last-child td {
     font-size: 0.8rem !important;
   }
 }
+
+/* ============================================================
+   Unified Academic Stats Panel (Overview left column)
+   ============================================================ */
+
+.dash-stats-panel {
+  padding: 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.stats-section {
+  padding: 20px 0;
+}
+
+.stats-section:first-child {
+  padding-top: 0;
+}
+
+.stats-section:last-child {
+  padding-bottom: 0;
+}
+
+.stats-divider {
+  height: 1px;
+  background: rgba(186, 166, 149, 0.2);
+  flex-shrink: 0;
+}
+
+.stats-section-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+/* --- GPA Hero --- */
+.gpa-hero-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.gpa-hero-number {
+  font-family: var(--font-display);
+  font-size: 3.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.gpa-year-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.gpa-year-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(186, 166, 149, 0.15);
+  border: 1px solid rgba(186, 166, 149, 0.2);
+  border-radius: 10px;
+  padding: 4px 10px;
+}
+
+.gpa-year-chip-estimated {
+  opacity: 0.65;
+}
+
+.gpa-year-chip-grade {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  min-width: 28px;
+}
+
+.gpa-year-chip-val {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* --- TOEFL Hero --- */
+.toefl-hero-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.toefl-hero-total {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.toefl-hero-breakdown {
+  display: flex;
+  gap: 6px;
+}
+
+.toefl-hero-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(186, 166, 149, 0.15);
+  border: 1px solid rgba(186, 166, 149, 0.2);
+  border-radius: 10px;
+  padding: 5px 8px;
+  min-width: 34px;
+}
+
+.toefl-chip-letter {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.toefl-chip-score {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.toefl-hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-left: auto;
+  text-align: right;
+}
+
+.toefl-hero-date {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.toefl-hero-target {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: rgba(44, 39, 36, 0.07);
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+
+/* --- Course Grades List --- */
+.course-grades-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.course-grades-list::-webkit-scrollbar {
+  width: 3px;
+}
+.course-grades-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.course-grades-list::-webkit-scrollbar-thumb {
+  background: rgba(186, 166, 149, 0.4);
+  border-radius: 4px;
+}
+
+.course-grade-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(186, 166, 149, 0.08);
+  transition: background 0.2s ease;
+}
+
+
+
+.course-grade-name {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.course-grade-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.course-grade-badge {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 7px;
+  background: rgba(186, 166, 149, 0.2);
+  color: var(--text-secondary);
+}
+
+.course-grade-score {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 18px;
+  text-align: right;
+}
+
+.course-grade-score.grade-a {
+  color: #5a7a4a;
+}
+
+.course-grade-score.grade-b {
+  color: #7a6040;
+}
+
+/* --- Volunteer Hours Hero --- */
+.volunteer-hero-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.volunteer-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(186, 166, 149, 0.15);
+  border: 1px solid rgba(186, 166, 149, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.volunteer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.volunteer-hours-num {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.volunteer-hours-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.volunteer-orgs-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  background: rgba(186, 166, 149, 0.12);
+  border: 1px solid rgba(186, 166, 149, 0.2);
+  border-radius: 14px;
+  padding: 8px 16px;
+}
+
+.volunteer-org-num {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.volunteer-org-label {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .gpa-hero-number {
+    font-size: 2.8rem;
+  }
+  .toefl-hero-total {
+    font-size: 2.2rem;
+  }
+  .toefl-hero-meta {
+    margin-left: 0;
+    text-align: left;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .course-grades-list {
+    max-height: 200px;
+  }
+}
+
+/* ==========================================
+   Dark Theme Adaptation & SVG Gradient Overrides
+   ========================================== */
+
+[data-theme="dark"] {
+  --card-bg: rgba(30, 26, 23, 0.7); /* Deep warm charcoal translucency */
+  --card-bg-hover: rgba(38, 33, 29, 0.85);
+  --card-dark: #eee7e1; /* Off-white for high contrast in dark mode */
+  --text-primary: #f5ece3; /* Light warm cream */
+  --text-secondary: #beb0a2; /* Soft warm muted grey-brown */
+  --glass-border: rgba(222, 203, 183, 0.15); /* Soft light warm border */
+  --glass-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.45); /* Deeper shadow for dark mode */
+  --action-btn-text: #24201d; /* Dark text/icon color inside circles */
+  --lang-btn-active-text: #24201d; /* Dark text inside active lang buttons */
+  
+  /* Design Gallery Aurora Colors (Dark theme) */
+  --aurora-glow-1: rgba(212, 163, 115, 0.9);  /* Glowing gold */
+  --aurora-glow-2: rgba(133, 98, 70, 0.3);   /* Warm bronze */
+  --aurora-bg: rgba(44, 39, 36, 0.8);
+}
+
+[data-theme="dark"] body {
+  background: #171412; /* Deep warm obsidian */
+}
+
+/* Header & Floating Pill */
+[data-theme="dark"] .header-wrapper {
+  background: #24201d; /* Solid Warm Charcoal */
+  border: 1px solid rgba(222, 203, 183, 0.15);
+  box-shadow: 
+    0 30px 60px -15px rgba(0, 0, 0, 0.55),
+    0 12px 24px -8px rgba(0, 0, 0, 0.45),
+    0 4px 10px -4px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(255, 255, 255, 0.08) inset,
+    0 -1px 1px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* Theme Toggle Icons */
+#theme-toggle .sun-icon {
+  display: none;
+}
+#theme-toggle .moon-icon {
+  display: block;
+}
+[data-theme="dark"] #theme-toggle .sun-icon {
+  display: block;
+}
+[data-theme="dark"] #theme-toggle .moon-icon {
+  display: none;
+}
+
+/* Translucent components backgrounds in Dark Mode */
+[data-theme="dark"] .lang-switch {
+  background: rgba(30, 26, 23, 0.6);
+}
+[data-theme="dark"] .email-text {
+  background: rgba(36, 32, 29, 0.95);
+}
+[data-theme="dark"] .nested-card {
+  background: rgba(30, 26, 23, 0.5);
+}
+[data-theme="dark"] .gpa-simulator-panel {
+  background: rgba(30, 26, 23, 0.6);
+}
+[data-theme="dark"] .simulator-option {
+  border-bottom: 1px solid rgba(222, 203, 183, 0.1);
+}
+[data-theme="dark"] .toefl-node {
+  background: rgba(30, 26, 23, 0.45);
+}
+[data-theme="dark"] .toefl-node.target {
+  background: rgba(30, 26, 23, 0.75);
+  border-color: rgba(222, 203, 183, 0.25);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+[data-theme="dark"] .score-chip {
+  background: rgba(30, 26, 23, 0.7);
+  border: 1px solid rgba(222, 203, 183, 0.15);
+}
+[data-theme="dark"] .filter-btn {
+  background: rgba(222, 203, 183, 0.12);
+  border: 1px solid rgba(222, 203, 183, 0.2);
+  color: var(--text-primary);
+}
+[data-theme="dark"] .filter-btn.active {
+  background: var(--card-dark) !important;
+  color: var(--action-btn-text) !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35) !important;
+}
+[data-theme="dark"] .filter-btn:not(.active):hover {
+  background: rgba(222, 203, 183, 0.25);
+  color: var(--text-primary);
+}
+[data-theme="dark"] .project-tag {
+  background: rgba(30, 26, 23, 0.7);
+  border: 1px solid rgba(222, 203, 183, 0.15);
+}
+[data-theme="dark"] .project-highlights {
+  border-top: 1px solid rgba(222, 203, 183, 0.1);
+}
+[data-theme="dark"] .volunteering-item {
+  background: rgba(30, 26, 23, 0.5);
+}
+[data-theme="dark"] tr {
+  background: rgba(30, 26, 23, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+[data-theme="dark"] th {
+  border-bottom: 2px solid rgba(222, 203, 183, 0.15);
+}
+[data-theme="dark"] td {
+  border-bottom: 1px solid rgba(222, 203, 183, 0.1);
+}
+
+/* Timeline */
+[data-theme="dark"] .timeline::before {
+  background: rgba(222, 203, 183, 0.1);
+}
+[data-theme="dark"] .timeline-item::before {
+  border: 4px solid #1e1a17;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Organic Sand Dunes SVG Gradient Adaptation */
+[data-theme="dark"] #dune-grad-1 stop:nth-child(1) { stop-color: #1e1a17 !important; }
+[data-theme="dark"] #dune-grad-1 stop:nth-child(2) { stop-color: #191512 !important; }
+[data-theme="dark"] #dune-grad-1 stop:nth-child(3) { stop-color: #13100e !important; }
+
+[data-theme="dark"] #dune-grad-2 stop:nth-child(1) { stop-color: #1c1815 !important; }
+[data-theme="dark"] #dune-grad-2 stop:nth-child(2) { stop-color: #241f1b !important; }
+[data-theme="dark"] #dune-grad-2 stop:nth-child(3) { stop-color: #2e2823 !important; }
+
+[data-theme="dark"] #dune-grad-3 stop:nth-child(1) { stop-color: #221d19 !important; }
+[data-theme="dark"] #dune-grad-3 stop:nth-child(2) { stop-color: #181412 !important; }
+[data-theme="dark"] #dune-grad-3 stop:nth-child(3) { stop-color: #0f0d0b !important; }
+
+/* Location Card Globe SVG Adaptation */
+[data-theme="dark"] #sphereGradMd stop:nth-child(1) { stop-color: rgba(255, 255, 255, 0.05) !important; }
+[data-theme="dark"] #sphereGradMd stop:nth-child(2) { stop-color: rgba(186, 166, 149, 0.15) !important; }
+[data-theme="dark"] #sphereGradMd stop:nth-child(3) { stop-color: rgba(44, 39, 36, 0.8) !important; }
+
+[data-theme="dark"] .globe-container line,
+[data-theme="dark"] .globe-container path {
+  stroke: rgba(222, 203, 183, 0.15) !important;
+}
+[data-theme="dark"] .globe-container circle[fill^="url"] {
+  stroke: rgba(222, 203, 183, 0.25) !important;
+}
+[data-theme="dark"] .globe-container circle[fill^="rgba(85, 74, 65"] {
+  fill: rgba(222, 203, 183, 0.35) !important;
+}
+
+/* ==========================================================================
+   Design Gallery Photo Browser Card & Interactive Dial
+   ========================================================================== */
+.photo-browser-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px !important;
+}
+
+.dial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.dial-header h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dial-instruction {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.spin-icon {
+  animation: spinIconAnim 3s linear infinite;
+}
+
+@keyframes spinIconAnim {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.dial-counter {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(186, 166, 149, 0.15);
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.dial-core-wrapper {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: #151515; /* Slightly lighter flat dark background */
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); /* Flat design, removed outer drop shadow */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aurora-ring-container {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0; /* Keep flush to prevent leaking outside */
+  border-radius: 50%;
+  pointer-events: none;
+  transform-origin: center center;
+  /* Snappy transition for real-time rotation */
+  transition: transform 0.05s linear;
+  overflow: hidden; /* Clips the glow to only the black ring, absolutely no leaking! */
+}
+
+.aurora-conic {
+  position: absolute;
+  top: -10px; left: -10px; right: -10px; bottom: -10px;
+  border-radius: 50%;
+  /* Warm amber/gold color to perfectly match the UI's earthy/beige theme */
+  background: conic-gradient(from 0deg at 50% 50%, rgba(212, 163, 115, 0.95) 0deg, transparent 20deg, transparent 270deg, rgba(212, 163, 115, 0.1) 320deg, rgba(212, 163, 115, 0.95) 360deg);
+  filter: blur(12px);
+}
+
+.aurora-peak {
+  position: absolute;
+  top: -5px; left: 50%; /* Positioned right against the top clipped edge */
+  width: 50px; height: 35px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 50% 0%, rgba(255, 200, 100, 1) 0%, transparent 60%);
+  filter: blur(2px);
+}
+
+.inner-photo-circle {
+  position: absolute;
+  top: 20px; left: 20px; right: 20px; bottom: 20px; /* Thinner black ring (20px instead of 40px) */
+  border-radius: 50%;
+  background: #1c1c1e;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1);
+  z-index: 5;
+  perspective: 1000px;
+}
+
+.dial-photo-slides {
+  position: relative;
+  width: 100%; height: 100%;
+}
+
+.photo-slide {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  width: 100%;
+  height: 100%;
+}
+
+.photo-slide.active {
+  opacity: 1;
+  z-index: 3;
+}
+
+/* Animations */
+.photo-slide.leaving-cw {
+  animation: outToRightBottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 2;
+}
+.photo-slide.entering-cw {
+  animation: inFromLeftBottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 3;
+}
+.photo-slide.leaving-ccw {
+  animation: outToLeftBottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 2;
+}
+.photo-slide.entering-ccw {
+  animation: inFromRightBottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 3;
+}
+
+@keyframes outToLeftBottom {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0deg); transform-origin: 50% 150%; }
+  100% { opacity: 0; transform: translate3d(-80px, 50px, 0) scale(0.8) rotate(-30deg); transform-origin: 50% 150%; }
+}
+@keyframes inFromRightBottom {
+  0% { opacity: 0; transform: translate3d(80px, 50px, 0) scale(0.8) rotate(30deg); transform-origin: 50% 150%; }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0deg); transform-origin: 50% 150%; }
+}
+@keyframes outToRightBottom {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0deg); transform-origin: 50% 150%; }
+  100% { opacity: 0; transform: translate3d(80px, 50px, 0) scale(0.8) rotate(30deg); transform-origin: 50% 150%; }
+}
+@keyframes inFromLeftBottom {
+  0% { opacity: 0; transform: translate3d(-80px, 50px, 0) scale(0.8) rotate(-30deg); transform-origin: 50% 150%; }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0deg); transform-origin: 50% 150%; }
+}
+
+.dial-touch-overlay {
+  position: absolute;
+  top: -20px; left: -20px; right: -20px; bottom: -20px;
+  border-radius: 50%;
+  z-index: 10;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.dial-touch-overlay:active {
+  cursor: grabbing;
+}
+
+
