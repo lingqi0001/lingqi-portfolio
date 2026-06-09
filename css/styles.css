@@ -90,7 +90,7 @@ header.container {
 }
 
 .main-content {
-  padding-top: 92px; /* Offset for fixed desktop header */
+  padding-top: 96px; /* Offset for fixed desktop header to align top/bottom gaps equally */
 }
 
 .header-wrapper {
@@ -200,6 +200,14 @@ nav {
 
 .nav-tab.active::after {
   transform: translateX(-50%) scaleX(1);
+}
+
+.desktop-only-text {
+  display: inline;
+}
+
+.mobile-only-text {
+  display: none;
 }
 
 .tab-icon {
@@ -670,7 +678,7 @@ tr:last-child td {
 .project-filters {
   display: flex;
   gap: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
@@ -847,11 +855,125 @@ tr:last-child td {
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+/* Dashboard Hero Profile Section */
+.dashboard-hero {
+  display: grid;
+  grid-template-columns: 1.40fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.intro-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.intro-card h2 {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  font-family: var(--font-display);
+}
+
+.intro-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.intro-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+.bullet-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2.5px;
+}
+
+.bullet-icon svg {
+  color: var(--text-secondary);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.intro-bullets li:hover .bullet-icon svg {
+  color: var(--text-primary);
+  transform: scale(1.08);
+}
+
+.location-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 240px;
+}
+
+.location-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+}
+
+.location-header svg {
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.globe-container {
+  position: absolute;
+  bottom: -45px;
+  right: -25px;
+  width: 240px;
+  height: 240px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.globe-container.globe-left {
+  left: -25px;
+  right: auto;
+}
+
+/* Subtle micro-rotation to make the globe feel alive */
+@keyframes rotateGlobeSubtle {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.globe-container svg {
+  animation: rotateGlobeSubtle 24s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@media (min-width: 1025px) {
+  #dashboard .dashboard-grid {
+    grid-template-columns: 450px 1fr;
+  }
+  #dashboard .projects-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
 }
 
 /* Responsive Customizations */
 @media (max-width: 1024px) {
-  .hero-layout-grid, .dashboard-grid, .academic-layout {
+  .hero-layout-grid, .dashboard-grid, .academic-layout, .dashboard-hero {
     grid-template-columns: 1fr;
     gap: 32px;
   }
@@ -861,6 +983,10 @@ tr:last-child td {
 }
 
 @media (max-width: 768px) {
+  body {
+    padding-bottom: 120px !important; /* Prevents the floating bottom menu from overlapping content */
+  }
+
   header.container {
     position: relative; /* Normal flow on mobile */
     top: auto;
@@ -922,10 +1048,18 @@ tr:last-child td {
     z-index: 1000;
   }
 
+  .desktop-only-text {
+    display: none;
+  }
+
+  .mobile-only-text {
+    display: inline;
+  }
+
   .nav-tab {
     position: relative;
     z-index: 1; /* Stay clickable above active pill */
-    padding: 8px 16px;
+    padding: 8px 10px; /* Reduced padding on mobile to fit text labels without wrapping */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -936,6 +1070,8 @@ tr:last-child td {
     color: #cfc5ba; /* Significantly lighter warm gray for readability/contrast */
     gap: 4px;
     transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 60px; /* Ensure uniform tab button sizes on mobile */
+    flex-shrink: 0; /* Prevent the browser from squeezing the tab layout */
   }
 
   .nav-tab::after {
@@ -958,17 +1094,8 @@ tr:last-child td {
     display: block; /* Show labels under icons on mobile */
     font-size: 0.65rem;
     font-weight: 600;
-  }
-
-  .nav-tab[data-tab="projects"] .tab-text {
-    font-size: 0;
-  }
-
-  .nav-tab[data-tab="projects"] .tab-text::after {
-    content: "Project";
-    font-size: 0.65rem;
-    font-weight: 600;
-    display: block;
+    white-space: nowrap; /* Prevent labels from wrapping to two lines */
+    flex-shrink: 0; /* Guarantee that the text labels will not be squeezed */
   }
 
   .tab-icon {

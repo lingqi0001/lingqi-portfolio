@@ -1,13 +1,31 @@
+// Path-based language detection
+const pathname = window.location.pathname;
 let currentLang = 'en';
+if (pathname.includes('/cn/') || pathname.endsWith('/cn') || pathname.endsWith('/cn/index.html')) {
+  currentLang = 'zh';
+} else if (pathname.includes('/en/') || pathname.endsWith('/en') || pathname.endsWith('/en/index.html')) {
+  currentLang = 'en';
+} else {
+  currentLang = 'en'; // Root defaults to English
+}
+
 
 const UI_TRANSLATIONS = {
   en: {
     "header.subtitle": "Personal Website",
     "nav.overview": "Overview",
     "nav.academic": "Academic",
-    "nav.projects": "Leadership & Project",
+    "nav.projectsDesktop": "Leadership & Project",
+    "nav.projectsMobile": "Projects",
     "nav.timeline": "Timeline",
     "header.emailTooltip": "Contact Email",
+    "dash.introTitle": "Hi, I'm Lingqi!",
+    "dash.introBullet1": "Student at Centennial High School, MD.",
+    "dash.introBullet2": "Passionate about Human-Computer Interaction (HCI) with a strong focus on UI/UX research and web technology.",
+    "dash.introBullet3": "Rejects template frameworks to design and build custom user interfaces and digital experiences.",
+    "dash.introBullet4": "Currently investigating urban navigation systems, AI model design, and interactive products.",
+    "dash.locationText": "Centennial High School, MD",
+    "dash.locationGuangzhou": "Guangzhou, China",
     "dash.profileIndex": "Admissions & Profile Index",
     "dash.primaryMajor": "Primary Major Target",
     "dash.secondaryFocus": "Secondary Focus",
@@ -50,9 +68,17 @@ const UI_TRANSLATIONS = {
     "header.subtitle": "个人网站",
     "nav.overview": "概览",
     "nav.academic": "学术背景",
-    "nav.projects": "项目与领导力",
-    "nav.timeline": "规划时间线",
+    "nav.projectsDesktop": "项目与领导力",
+    "nav.projectsMobile": "项目",
+    "nav.timeline": "时间线",
     "header.emailTooltip": "联系邮箱",
+    "dash.introTitle": "你好，我是莫令琪！",
+    "dash.introBullet1": "就读于 Centennial High School, MD。",
+    "dash.introBullet2": "热衷于人机交互 (HCI) 领域，专注于用户体验研究与前端技术。",
+    "dash.introBullet3": "拒绝套用模板框架，热衷于设计与开发独特的数字化用户界面。",
+    "dash.introBullet4": "正在开展有关城市导视系统优化、AI 匹配模型及校园社区工具的实践。",
+    "dash.locationText": "马里兰州 Centennial High School, MD",
+    "dash.locationGuangzhou": "中国 广州",
     "dash.profileIndex": "录取与个人档案指标",
     "dash.primaryMajor": "主申专业方向",
     "dash.secondaryFocus": "细分/次要方向",
@@ -97,7 +123,15 @@ function getActiveData() {
   return PORTFOLIO_DATA[currentLang];
 }
 
+// Disable browser scroll restoration to prevent page jumps/shifts on refresh
+if (history.scrollRestoration) {
+  history.scrollRestoration = 'manual';
+}
+
 function initAll() {
+  // Ensure the page starts at the absolute top on load/refresh
+  window.scrollTo(0, 0);
+
   const initializers = [
     { name: 'Navigation', fn: initNavigation },
     { name: 'LanguageSwitch', fn: initLanguageSwitch },
@@ -155,6 +189,9 @@ function initNavigation() {
         targetSection.classList.add('active');
       }
       
+      // Scroll to the true top of the page when changing tabs
+      window.scrollTo(0, 0);
+      
       // Defer calculation slightly to let browser complete flexbox layout reflows
       setTimeout(updateActivePill, 20);
     });
@@ -187,30 +224,46 @@ function initNavigation() {
 // Language Switch Handler
 function initLanguageSwitch() {
   const langBtns = document.querySelectorAll('.lang-switch .lang-btn');
+  
+  // Highlight active button on load based on currentLang
+  langBtns.forEach(btn => {
+    const isBtnZh = btn.textContent.trim() === '中';
+    if ((currentLang === 'zh' && isBtnZh) || (currentLang === 'en' && !isBtnZh)) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
   langBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.classList.contains('active')) return;
+      const isClickingZh = btn.textContent.trim() === '中';
+      const currentPath = window.location.pathname;
+      const isLocalFile = window.location.protocol === 'file:';
       
-      langBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      let targetUrl = '';
+      if (isClickingZh) {
+        if (currentPath.includes('/en/')) {
+          targetUrl = currentPath.replace('/en/', '/cn/');
+        } else if (currentPath.includes('/cn/')) {
+          return; // Already there
+        } else {
+          // We are at root, go to cn/index.html
+          targetUrl = isLocalFile ? 'cn/index.html' : '/cn/';
+        }
+      } else {
+        if (currentPath.includes('/cn/')) {
+          targetUrl = currentPath.replace('/cn/', '/en/');
+        } else if (currentPath.includes('/en/')) {
+          return; // Already there
+        } else {
+          // We are at root, go to en/index.html
+          targetUrl = isLocalFile ? 'en/index.html' : '/en/';
+        }
+      }
       
-      const isZh = btn.textContent.trim() === '中';
-      currentLang = isZh ? 'zh' : 'en';
-      
-      // Update DOM
-      document.documentElement.lang = isZh ? 'zh-CN' : 'en';
-      updateStaticTexts(currentLang);
-      
-      // Re-initialize all data rendering
-      try { initDashboard(); } catch (e) { console.error("Error in initDashboard:", e); }
-      try { initProjects(); } catch (e) { console.error("Error in initProjects:", e); }
-      try { initAcademics(); } catch (e) { console.error("Error in initAcademics:", e); }
-      try { initVolunteeringAndTimeline(); } catch (e) { console.error("Error in initVolunteeringAndTimeline:", e); }
-      
-      // Trigger navigation pill realignment after layout changes
-      const activeTab = document.querySelector('.nav-tab.active');
-      if (activeTab) {
-        activeTab.click();
+      if (targetUrl) {
+        window.location.href = targetUrl;
       }
     });
   });
@@ -248,80 +301,67 @@ function updateStaticTexts(lang) {
 
 // Overview Dashboard Initializer
 function initDashboard() {
-  const activeData = getActiveData();
-
-  // Populate Dynamic Profile Title Fields
-  const primaryMajor = document.getElementById('dash-primary-major');
-  if (primaryMajor) {
-    primaryMajor.textContent = activeData.profile.targetMajor;
-  }
-  const secondaryFocus = document.getElementById('dash-secondary-focus');
-  if (secondaryFocus) {
-    secondaryFocus.textContent = activeData.profile.focus;
-  }
-
-  // Populate Total Volunteer Hours
-  const totalVolunteeringHours = activeData.volunteering.reduce((acc, curr) => acc + curr.hours, 0);
-  const volunteeringBadge = document.getElementById('dash-volunteer-hours');
-  if (volunteeringBadge) {
-    volunteeringBadge.textContent = "100h+";
-  }
-
-  // Render recent milestones into the mini-timeline on dashboard
-  const miniTimeline = document.getElementById('mini-timeline');
-  if (miniTimeline) {
-    miniTimeline.innerHTML = activeData.milestones.slice(0, 3).map(m => `
-      <div class="timeline-item">
-        <div class="timeline-date">${m.date}</div>
-        <div class="timeline-task">${m.task}</div>
-      </div>
-    `).join('');
-  }
+  // Static content and sub-initializers handle rendering
 }
 
 // Project Portfolio Section Initializer
 function initProjects() {
   const activeData = getActiveData();
-  const filterContainer = document.querySelector('.project-filters');
-  const grid = document.querySelector('.projects-grid');
-  if (!grid) return;
+  
+  // Initialize all project wrappers independently
+  const containers = [
+    {
+      filters: document.querySelector('#projects .project-filters'),
+      grid: document.querySelector('#projects .projects-grid')
+    },
+    {
+      filters: document.querySelector('#dashboard .project-filters'),
+      grid: document.querySelector('#dashboard .projects-grid')
+    }
+  ];
 
-  function renderProjects(category = 'all') {
-    const filtered = category === 'all' 
-      ? activeData.projects 
-      : activeData.projects.filter(p => p.category === category);
+  containers.forEach(container => {
+    const { filters, grid } = container;
+    if (!grid) return;
 
-    grid.innerHTML = filtered.map(p => `
-      <div class="glass-card project-card" data-category="${p.category}">
-        <div class="project-category" data-i18n="proj.${p.category}">${UI_TRANSLATIONS[currentLang]["proj." + p.category] || p.category}</div>
-        <h3>${p.title}</h3>
-        <p>${p.description}</p>
-        <div class="project-tags">
-          ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
+    function renderProjects(category = 'all') {
+      const currentActiveData = getActiveData();
+      const filtered = category === 'all' 
+        ? currentActiveData.projects 
+        : currentActiveData.projects.filter(p => p.category === category);
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="glass-card project-card" data-category="${p.category}">
+          <div class="project-category" data-i18n="proj.${p.category}">${UI_TRANSLATIONS[currentLang]["proj." + p.category] || p.category}</div>
+          <h3>${p.title}</h3>
+          <p>${p.description}</p>
+          <div class="project-tags">
+            ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
+          </div>
+          <ul class="project-highlights">
+            ${p.highlights.map(h => `<li>${h}</li>`).join('')}
+          </ul>
         </div>
-        <ul class="project-highlights">
-          ${p.highlights.map(h => `<li>${h}</li>`).join('')}
-        </ul>
-      </div>
-    `).join('');
-  }
+      `).join('');
+    }
 
-  // Setup click handlers for filters (clean single listener registration)
-  if (filterContainer && !filterContainer.dataset.listener) {
-    filterContainer.addEventListener('click', (e) => {
-      if (e.target.classList.contains('filter-btn')) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
-        renderProjects(e.target.getAttribute('data-filter'));
-      }
-    });
-    filterContainer.dataset.listener = "true";
-  }
+    // Setup click handlers for filters
+    if (filters && !filters.dataset.listener) {
+      filters.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          filters.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+          e.target.classList.add('active');
+          renderProjects(e.target.getAttribute('data-filter'));
+        }
+      });
+      filters.dataset.listener = "true";
+    }
 
-  // Initial render
-  const activeFilterBtn = document.querySelector('.filter-btn.active');
-  const initialFilter = activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'all';
-  renderProjects(initialFilter);
+    // Initial render
+    const activeFilterBtn = filters ? filters.querySelector('.filter-btn.active') : null;
+    const initialFilter = activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'all';
+    renderProjects(initialFilter);
+  });
 }
 
 // Academic & GPA Section Initializer
@@ -329,21 +369,31 @@ function initAcademics() {
   const activeData = getActiveData();
 
   // Populate TOEFL Tracker
-  const toeflTrack = document.getElementById('toefl-track');
-  if (toeflTrack) {
-    toeflTrack.innerHTML = activeData.toefl.map(t => `
-      <div class="toefl-node ${t.target ? 'target' : ''}">
-        <div class="toefl-date">${t.date}</div>
-        <div class="toefl-scores">
-          <div class="score-chip"><span>R</span><span>${t.r}</span></div>
-          <div class="score-chip"><span>L</span><span>${t.l}</span></div>
-          <div class="score-chip"><span>S</span><span>${t.s}</span></div>
-          <div class="score-chip"><span>W</span><span>${t.w}</span></div>
+  const toeflTracks = document.querySelectorAll('.toefl-track-dynamic');
+  toeflTracks.forEach(toeflTrack => {
+    toeflTrack.innerHTML = activeData.toefl.map(t => {
+      // Parse "Label (Date)" or "Label（Date）" to display on separate lines
+      const parts = t.date.split(/[\(\)（）]/);
+      const labelText = parts[0] ? parts[0].trim() : '';
+      const dateText = parts[1] ? parts[1].trim() : '';
+      
+      return `
+        <div class="toefl-node ${t.target ? 'target' : ''}">
+          <div class="toefl-meta" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
+            <strong class="toefl-label" style="font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text-primary); line-height: 1.1; white-space: nowrap;">${labelText}</strong>
+            <span class="toefl-date-sub" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; white-space: nowrap;">${dateText}</span>
+          </div>
+          <div class="toefl-scores">
+            <div class="score-chip"><span>R</span><span>${t.r}</span></div>
+            <div class="score-chip"><span>L</span><span>${t.l}</span></div>
+            <div class="score-chip"><span>S</span><span>${t.s}</span></div>
+            <div class="score-chip"><span>W</span><span>${t.w}</span></div>
+          </div>
+          <div class="toefl-total">${t.total}</div>
         </div>
-        <div class="toefl-total">${t.total}</div>
-      </div>
-    `).join('');
-  }
+      `;
+    }).join('');
+  });
 
   // Populate GPA Tables (localized column labels for mobile view)
   const isZh = currentLang === 'zh';

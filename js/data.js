@@ -119,20 +119,20 @@ const PORTFOLIO_DATA = {
     ],
     courses: {
       g10g11: [
-        { name: "American Government-Honor", grade: "A", level: "Honor" },
-        { name: "Independent Research-GT", grade: "A", level: "GT" },
-        { name: "Advance Object Oriented Design-GT", grade: "A", level: "GT" },
-        { name: "English-Honor", grade: "B", level: "Honor" },
-        { name: "Video Production-GT", grade: "A", level: "GT" },
-        { name: "AP Psychology", grade: "A (AP 4-5 Target, G10 Score: 4)", level: "AP / GT" },
+        { name: "American Government", grade: "A", level: "Honor" },
+        { name: "Independent Research", grade: "A", level: "GT" },
+        { name: "Advance Object Oriented Design", grade: "A", level: "GT" },
+        { name: "English", grade: "B", level: "Honor" },
+        { name: "Video Production", grade: "A", level: "GT" },
+        { name: "AP Psychology", grade: "A (AP 4-5 Target)", level: "AP" },
         { name: "AP Calculus BC", grade: "B (AP 5 Target, G10 Score: 3)", level: "AP" },
         { name: "AP Computer Science A", grade: "AP 4-5 Target (Self-study, G10 Score: 3)", level: "AP" },
         { name: "AP Micro Economics", grade: "AP 4/5 (G10 Result)", level: "AP" }
       ],
       g12: [
         { name: "AP Statistics", detail: "HCC college credit alternative option", expected: "A", status: "Planned" },
-        { name: "Advance Topic in CS – G/T", detail: "CS continuation track", expected: "A", status: "Planned" },
-        { name: "English 12 - Hon", detail: "Senior English requirement", expected: "A", status: "Planned" },
+        { name: "Advance Topic in CS", detail: "CS continuation track", expected: "A", status: "Planned" },
+        { name: "English 12", detail: "Senior English requirement", expected: "A", status: "Planned" },
         { name: "Sports for Life", detail: "Physical education elective", expected: "A", status: "Planned" },
         { name: "Law and the Citizen", detail: "Social sciences elective", expected: "A", status: "Planned" },
         { name: "AP Physics I", detail: "Scientific reasoning requirement", expected: "B-A", status: "Planned" }
@@ -281,20 +281,20 @@ const PORTFOLIO_DATA = {
     ],
     courses: {
       g10g11: [
-        { name: "美国政府 - 荣誉级", grade: "A", level: "Honor" },
-        { name: "独立研究 - GT级", grade: "A", level: "GT" },
-        { name: "高级面向对象设计 - GT级", grade: "A", level: "GT" },
-        { name: "英语 - 荣誉级", grade: "B", level: "Honor" },
-        { name: "视频制作 - GT级", grade: "A", level: "GT" },
-        { name: "AP 心理学", grade: "A (AP 4-5分目标，十年级成绩：4)", level: "AP / GT" },
+        { name: "美国政府", grade: "A", level: "Honor" },
+        { name: "独立研究", grade: "A", level: "GT" },
+        { name: "高级面向对象设计", grade: "A", level: "GT" },
+        { name: "英语", grade: "B", level: "Honor" },
+        { name: "视频制作", grade: "A", level: "GT" },
+        { name: "AP 心理学", grade: "A (AP 4-5分目标)", level: "AP" },
         { name: "AP 微积分 BC", grade: "B (AP 5分目标，十年级成绩：3)", level: "AP" },
         { name: "AP 计算机科学 A", grade: "AP 4-5分目标 (自学，十年级成绩：3)", level: "AP" },
         { name: "AP 微观经济学", grade: "AP 4分 (十年级成绩)", level: "AP" }
       ],
       g12: [
         { name: "AP 统计学", detail: "同学推荐去HCC学，以此免除大学学分", expected: "A", status: "已规划" },
-        { name: "高级计算机课题 - G/T", detail: "确定选 (计算机进阶方向)", expected: "A", status: "已规划" },
-        { name: "英语 12 - 荣誉级", detail: "高年级英语必修", expected: "A", status: "已规划" },
+        { name: "高级计算机课题", detail: "确定选 (计算机进阶方向)", expected: "A", status: "已规划" },
+        { name: "英语 12", detail: "高年级英语必修", expected: "A", status: "已规划" },
         { name: "终身运动", detail: "确定选 (体育选修)", expected: "A", status: "已规划" },
         { name: "法律与公民", detail: "确定选 (社会科学选修)", expected: "A", status: "已规划" },
         { name: "AP 物理 1", detail: "科学推理必修", expected: "B-A", status: "已规划" }
