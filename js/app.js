@@ -185,7 +185,7 @@ function initNavigation() {
   function updateActivePill() {
     const activeTab = document.querySelector('.nav-tab.active');
     if (activeTab && activePill) {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 860) {
         activePill.style.width = `${activeTab.offsetWidth}px`;
         activePill.style.height = `${activeTab.offsetHeight}px`;
         activePill.style.left = `${activeTab.offsetLeft}px`;
@@ -546,13 +546,36 @@ function initVolunteeringAndTimeline() {
 function initEmailPill() {
   const emailPill = document.querySelector('.email-pill');
   if (emailPill) {
-    emailPill.addEventListener('click', (e) => {
-      e.stopPropagation();
-      emailPill.classList.toggle('expanded');
-    });
+    const btn = emailPill.querySelector('button');
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        if (window.innerWidth <= 860) {
+          e.stopPropagation();
+          emailPill.classList.toggle('expanded');
+        }
+      });
+    }
+
+    const emailText = emailPill.querySelector('.email-text');
+    if (emailText) {
+      emailText.addEventListener('click', (e) => {
+        if (window.innerWidth <= 860) {
+          e.stopPropagation();
+        }
+      });
+    }
 
     document.addEventListener('click', () => {
-      emailPill.classList.remove('expanded');
+      if (window.innerWidth <= 860) {
+        emailPill.classList.remove('expanded');
+      }
+    });
+
+    // Clean up .expanded class if the user resizes to desktop width
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 860) {
+        emailPill.classList.remove('expanded');
+      }
     });
   }
 }

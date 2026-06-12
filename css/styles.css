@@ -32,6 +32,7 @@
 }
 html {
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 /* Hard reset for interactive element focus states */
@@ -52,6 +53,8 @@ body {
   min-height: 100vh;
   padding-bottom: 80px;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 h1, h2, h3, h4 {
@@ -66,7 +69,7 @@ h1, h2, h3, h4 {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   z-index: -2;
   pointer-events: none;
@@ -331,6 +334,21 @@ nav {
   pointer-events: auto;
 }
 
+/* Hide theme toggle when email pill is expanded to prevent overlap */
+.header-actions:has(.email-pill.expanded) #theme-toggle {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+
+@media (hover: hover) {
+  .header-actions:has(.email-pill:hover) #theme-toggle {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+  }
+}
+
 /* Layout Showcase Block */
 .hero-layout-grid {
   display: grid;
@@ -508,7 +526,7 @@ nav {
 .main-content {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 1fr;
   perspective: 2000px;
   perspective-origin: 50% 35%; /* Tilted perspective for a more pronounced 3D sphere rotation */
@@ -854,7 +872,7 @@ tr:last-child td {
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
   gap: 24px;
 }
 
@@ -1118,7 +1136,7 @@ tr:last-child td {
 /* Responsive Customizations */
 @media (max-width: 1024px) {
   .hero-layout-grid, .dashboard-grid, .academic-layout, .dashboard-hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 32px;
   }
   .hero-text h2 {
@@ -1126,7 +1144,7 @@ tr:last-child td {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   body {
     padding-bottom: 120px !important; /* Prevents the floating bottom menu from overlapping content */
   }
@@ -1242,6 +1260,11 @@ tr:last-child td {
     flex-shrink: 0; /* Guarantee that the text labels will not be squeezed */
   }
 
+  /* Prevent text from overlapping the globe on mobile */
+  .location-card {
+    padding-bottom: 160px;
+  }
+
   .tab-icon {
     display: flex;
     align-items: center;
@@ -1316,7 +1339,7 @@ tr:last-child td {
 
   /* Prevent projects grid horizontal overflow on mobile screens */
   .projects-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 20px !important;
   }
 
@@ -1653,7 +1676,7 @@ tr:last-child td {
 }
 
 /* --- Responsive --- */
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .gpa-hero-number {
     font-size: 2.8rem;
   }
