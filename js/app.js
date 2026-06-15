@@ -155,7 +155,8 @@ function initAll() {
     { name: 'Academics', fn: initAcademics },
     { name: 'VolunteeringAndTimeline', fn: initVolunteeringAndTimeline },
     { name: 'EmailPill', fn: initEmailPill },
-    { name: 'ThemeToggle', fn: initThemeToggle }
+    { name: 'ThemeToggle', fn: initThemeToggle },
+    { name: 'PaperPrompt', fn: initPaperPrompt }
   ];
 
   initializers.forEach(item => {
@@ -790,5 +791,153 @@ function initDesignGallery() {
     onDragEnd();
   });
 }
+
+function initPaperPrompt() {
+  const pathname = window.location.pathname;
+  if (pathname.includes('paper.html')) {
+    return;
+  }
+
+  if (sessionStorage.getItem('paperPromptShown') === 'true') {
+    return;
+  }
+
+  const promptTexts = {
+    en: {
+      title: "Featured Research Paper",
+      message: "Would you like to view Moss Mo's independent research on <strong>Social Media and Teen Mental Health</strong>?",
+      yes: "View Research Paper",
+      no: "Explore Portfolio"
+    },
+    zh: {
+      title: "推荐学术论文",
+      message: "您是否想要查看莫令琪关于<strong>《社交媒体与青少年心理健康》</strong>的独立学术研究成果？",
+      yes: "查看研究论文",
+      no: "浏览个人作品集"
+    }
+  };
+
+  const texts = promptTexts[currentLang] || promptTexts.en;
+
+  const modalOverlay = document.createElement('div');
+  modalOverlay.id = 'paper-prompt-overlay';
+  modalOverlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  `;
+
+  const modalContainer = document.createElement('div');
+  modalContainer.className = 'glass-card';
+  modalContainer.style.cssText = `
+    max-width: 480px;
+    width: 90%;
+    padding: 36px;
+    border-radius: 28px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+  `;
+
+  modalContainer.innerHTML = `
+    <div style="
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      color: var(--action-btn-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+    ">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    <h3 style="
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    ">${texts.title}</h3>
+    <p style="
+      color: var(--text-primary);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    ">${texts.message}</p>
+    <div style="
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    ">
+      <a href="paper.html" id="btn-goto-paper" style="
+        display: block;
+        padding: 14px 24px;
+        background: var(--text-primary);
+        color: var(--action-btn-text);
+        border-radius: 18px;
+        text-decoration: none;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: transform 0.2s, opacity 0.2s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      " onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">${texts.yes}</a>
+      <button id="btn-close-prompt" style="
+        background: transparent;
+        border: 1px solid var(--glass-border);
+        color: var(--text-primary);
+        padding: 14px 24px;
+        border-radius: 18px;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      " onmouseover="this.style.background='rgba(0,0,0,0.03)'" onmouseout="this.style.background='transparent'">${texts.no}</button>
+    </div>
+  `;
+
+  modalOverlay.appendChild(modalContainer);
+  document.body.appendChild(modalOverlay);
+
+  setTimeout(() => {
+    modalOverlay.style.opacity = '1';
+    modalContainer.style.transform = 'scale(1)';
+  }, 100);
+
+  const closeBtn = modalContainer.querySelector('#btn-close-prompt');
+  const gotoBtn = modalContainer.querySelector('#btn-goto-paper');
+
+  function dismissModal() {
+    sessionStorage.setItem('paperPromptShown', 'true');
+    modalOverlay.style.opacity = '0';
+    modalContainer.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+      modalOverlay.remove();
+    }, 400);
+  }
+
+  closeBtn.addEventListener('click', dismissModal);
+  gotoBtn.addEventListener('click', () => {
+    sessionStorage.setItem('paperPromptShown', 'true');
+  });
+}
+
 
 

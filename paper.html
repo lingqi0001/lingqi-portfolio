@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Social Media and Teen Mental Health - Dedicated Academic Research Page by Moss Mo">
+  <title>Research: Social Media & Teen Mental Health</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Theme Init Script (Must be in head to avoid flash of theme style) -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      }
+    })();
+  </script>
+  
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="css/styles.css?v=3">
+  
+  <style>
+    /* Dedicated Page Enhancements */
+    .back-home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .back-home-btn:hover {
+      color: var(--text-primary);
+      transform: translateX(-2px);
+    }
+    .paper-hero {
+      text-align: center;
+      padding: 40px 20px;
+      margin-bottom: 30px;
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--card-border-radius);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .paper-hero h2 {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+    .paper-hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 30px;
+    }
+    @media (max-width: 960px) {
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .media-card {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .interactive-link-card {
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+    [data-theme="dark"] .interactive-link-card {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .interactive-link-card:hover {
+      transform: translateY(-2px);
+      background: var(--card-bg-hover);
+      box-shadow: var(--glass-shadow);
+    }
+    .doc-item {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    [data-theme="dark"] .doc-item {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .doc-item:hover {
+      background: var(--card-bg-hover);
+      transform: scale(1.01);
+    }
+    .doc-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .doc-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--text-primary);
+      color: var(--action-btn-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .doc-name {
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .doc-meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--text-primary);
+      color: var(--action-btn-text);
+      border-radius: 14px;
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+    .download-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .thanks-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(186, 143, 119, 0.2);
+      color: #b36b43;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-family: var(--font-display);
+    }
+    [data-theme="dark"] .thanks-badge {
+      background: rgba(186, 143, 119, 0.15);
+      color: #e39d73;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Smooth Organic Sand Dunes Background -->
+  <div class="dune-bg">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="dune-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f2e7dc" />
+          <stop offset="50%" stop-color="#e7d6c7" />
+          <stop offset="100%" stop-color="#dcbfa8" />
+        </linearGradient>
+        <linearGradient id="dune-grad-2" x1="10% " y1="100%" x2="90%" y2="0%">
+          <stop offset="0%" stop-color="#dcbfa8" />
+          <stop offset="50%" stop-color="#ebdccf" />
+          <stop offset="100%" stop-color="#f5ece3" />
+        </linearGradient>
+        <linearGradient id="dune-grad-3" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ecdcd0" />
+          <stop offset="50%" stop-color="#ceb29c" />
+          <stop offset="100%" stop-color="#bfa28c" />
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#dune-grad-1)" />
+      <path d="M0 250 C 400 150, 800 450, 1440 300 L 1440 900 L 0 900 Z" fill="url(#dune-grad-2)" opacity="0.65" />
+      <path d="M0 480 C 350 600, 950 350, 1440 550 L 1440 900 L 0 900 Z" fill="url(#dune-grad-3)" opacity="0.4" />
+      <path d="M0 720 C 500 600, 900 850, 1440 700 L 1440 900 L 0 900 Z" fill="url(#dune-grad-2)" opacity="0.3" />
+    </svg>
+  </div>
+
+  <!-- Floating Pill Header -->
+  <header class="container">
+    <div class="header-wrapper">
+      <div class="logo-section">
+        <a href="index.html" class="back-home-btn" title="Back to Portfolio">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <span style="font-family: var(--font-display); font-weight: 600;">Back</span>
+        </a>
+      </div>
+      
+      <nav class="navigation-bar">
+        <div class="nav-active-pill" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+        <button class="nav-tab active" data-tab="home">
+          <span class="tab-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </span>
+          <span class="tab-text">Home</span>
+        </button>
+        <button class="nav-tab" data-tab="documents">
+          <span class="tab-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <span class="tab-text">Research Documents</span>
+        </button>
+        <button class="nav-tab" data-tab="about">
+          <span class="tab-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <span class="tab-text">About Me</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <div class="lang-switch">
+          <span class="lang-btn active">EN</span>
+          <span class="lang-btn">中</span>
+        </div>
+        <button id="theme-toggle" class="action-btn-circle" title="Toggle Theme">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/>
+            <path d="M12 20v2"/>
+            <path d="M4.93 4.93l1.41 1.41"/>
+            <path d="M17.66 17.66l1.41 1.41"/>
+            <path d="M2 12h2"/>
+            <path d="M20 12h2"/>
+            <path d="M6.34 17.66l-1.41 1.41"/>
+            <path d="M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+        <div class="email-pill">
+          <span class="email-text">moss104088@gmail.com</span>
+          <button class="action-btn-circle" title="Contact Email">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    
+    <!-- Hero Banner -->
+    <div class="paper-hero">
+      <h2>Social Media and Teen Mental Health</h2>
+      <div class="subtitle">Independent Academic Research Project & Artifacts</div>
+    </div>
+
+    <!-- TAB 1: Home Page -->
+    <div id="home" class="tab-content active">
+      <div class="section-grid">
+        <!-- Text details -->
+        <div class="glass-card" style="padding: 40px; display: flex; flex-direction: column; gap: 24px;">
+          <h3 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 700;">Background of the Research Issue</h3>
+          
+          <p style="font-size: 1.15rem; font-weight: 600; color: var(--text-primary); line-height: 1.6; border-left: 4px solid var(--text-primary); padding-left: 16px; margin: 10px 0;">
+            Teenagers’ depression rates have surged by over 50% since 2010. Social media networks often leave teens feeling isolated and inadequate.
+          </p>
+
+          <p style="color: var(--text-primary); font-size: 1.05rem; line-height: 1.7;">
+            Social media acts as a "highlight reel." People only show their best lives instead of what’s actually happening. Teens measure their messy, real-life struggles against someone else’s polished, carefully selected moments.
+          </p>
+
+          <p style="color: var(--text-primary); font-size: 1.05rem; line-height: 1.7;">
+            This is known as <strong>upward comparison</strong>. It triggers persistent feelings of inferiority. Social media's intense obsession with peer perfection prevents genuine, horizontal peer connection, substituting authentic community with visual hierarchy.
+          </p>
+
+          <p style="color: var(--text-primary); font-size: 1.05rem; line-height: 1.7;">
+            Furthermore, recommendation algorithms push the most perfect, engaging, and filtered posts to the top of feed cycles. Digital filters construct a "fake reality" that is impossible to emulate. Protecting adolescent mental health calls for increasing media literacy and supportive adult guidance.
+          </p>
+        </div>
+
+        <!-- Video & External Links -->
+        <div class="media-card">
+          <!-- Video Section -->
+          <div class="glass-card" style="padding: 24px;">
+            <h4 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              Featured Documentary
+            </h4>
+            <div class="video-wrapper">
+              <iframe src="https://www.youtube.com/embed/wXLf1GfL7W0" title="How Social Media Affects Teens' Mental Health" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <!-- Article Link -->
+          <a href="https://www.commonsensemedia.org/articles/what-is-media-literacy-and-why-is-it-important" target="_blank" class="interactive-link-card" style="text-decoration: none; color: inherit;">
+            <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-family: var(--font-display); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Recommended Article
+            </div>
+            <h4 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">What is Media Literacy?</h4>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              Learn more about media literacy, why it is vital for teenagers, and how parents/teachers can offer effective guidance.
+            </p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Research Documents -->
+    <div id="documents" class="tab-content">
+      <div class="glass-card" style="padding: 40px; display: flex; flex-direction: column; gap: 32px;">
+        <div>
+          <h3 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 16px;">Research Methodology & Methodology Overview</h3>
+          <p style="color: var(--text-primary); font-size: 1.05rem; line-height: 1.7;">
+            This research utilized a dual-method approach. Secondary research analyzed existing psychological literature regarding social comparison and algorithm structures. Primary research consisted of semi-structured interviews with five experts in psychology and social media technology.
+          </p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <h4 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">Complete Research Files</h4>
+          
+          <!-- Document 1: PDF Draft (Google Doc URL for now) -->
+          <div class="doc-item">
+            <div class="doc-info">
+              <div class="doc-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="doc-name">Social Media and Teen Mental Health - Paper Draft</div>
+                <div class="doc-meta">External Google Doc Link (PDF file will be uploaded here in the future)</div>
+              </div>
+            </div>
+            <a href="https://docs.google.com/document/d/1rUIpeeo4i0vMsokK29yRQnajaEuHI24fhXiQurTn2J4/edit?tab=t.0" target="_blank" class="download-btn">
+              <span>View Draft</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: About Me & Thanks -->
+    <div id="about" class="tab-content">
+      <div class="glass-card" style="padding: 40px; display: flex; flex-direction: column; gap: 32px;">
+        
+        <div>
+          <h3 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 16px;">About the Researcher</h3>
+          <p style="color: var(--text-primary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 16px;">
+            I am <strong>Moss Mo</strong>. I conducted this independent research to understand why social media comparison is damaging to adolescent mental health. During this project, I learned that social media platforms are engineered to capture attention at the cost of self-esteem. Recognizing these online portrayals are not reality is the first step to breaking the cycle.
+          </p>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--glass-border);">
+
+        <div>
+          <span class="thanks-badge">Acknowledgement</span>
+          <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin-bottom: 12px;">Mentor Thanks</h3>
+          <p style="color: var(--text-primary); font-size: 1.05rem; line-height: 1.7;">
+            I want to express my deepest gratitude to my mentor, <strong>Ms. Toni Ireland</strong>. She provided constant guidance, encouragement, and invaluable academic support throughout this independent research process.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- JS Logic for Tabs, Theme, and Language Switches -->
+  <script>
+    // Tab switching logic
+    const tabs = document.querySelectorAll('.nav-tab');
+    const sections = document.querySelectorAll('.tab-content');
+    const activePill = document.querySelector('.nav-active-pill');
+
+    function updateActivePill() {
+      const activeTab = document.querySelector('.nav-tab.active');
+      if (activeTab && activePill) {
+        activePill.style.width = `${activeTab.offsetWidth}px`;
+        activePill.style.height = `${activeTab.offsetHeight}px`;
+        activePill.style.left = `${activeTab.offsetLeft}px`;
+        activePill.style.top = `${activeTab.offsetTop}px`;
+      }
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetTab = tab.getAttribute('data-tab');
+        
+        // Update active tab button
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Update active section
+        sections.forEach(s => {
+          s.classList.remove('active');
+          if (s.id === targetTab) {
+            s.classList.add('active');
+          }
+        });
+
+        // Reposition active indicator pill
+        updateActivePill();
+      });
+    });
+
+    // Run on init and resize
+    window.addEventListener('load', () => {
+      setTimeout(updateActivePill, 100);
+    });
+    window.addEventListener('resize', updateActivePill);
+
+    // Theme Switch logic matching main website
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('theme', nextTheme);
+      });
+    }
+
+    // Language Toggle logic matching main website
+    const langBtns = document.querySelectorAll('.lang-switch .lang-btn');
+    langBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const isClickingZh = btn.textContent.trim() === '中';
+        const currentPath = window.location.pathname;
+        const isLocalFile = window.location.protocol === 'file:';
+        
+        let targetUrl = '';
+        if (isClickingZh) {
+          if (currentPath.includes('/en/')) {
+            targetUrl = currentPath.replace('/en/', '/cn/');
+          } else {
+            // We are at root, go to cn/paper.html
+            const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+            targetUrl = isLocalFile ? `cn/${filename}` : `/cn/${filename}`;
+          }
+        } else {
+          if (currentPath.includes('/cn/')) {
+            targetUrl = currentPath.replace('/cn/', '/en/');
+          } else {
+            // We are at root, go to en/paper.html
+            const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+            targetUrl = isLocalFile ? `en/${filename}` : `/en/${filename}`;
+          }
+        }
+        
+        if (targetUrl) {
+          window.location.href = targetUrl;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
