@@ -278,7 +278,7 @@
           </svg>
         </button>
         <div class="email-pill">
-          <span class="email-text">moss104088@gmail.com</span>
+          <span class="email-text">lmo4803@inst.hcpss.org</span>
           <button class="action-btn-circle" title="Contact Email">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <rect width="20" height="16" x="2" y="4" rx="2"/>
@@ -292,28 +292,29 @@
 
   <main class="container main-content">
     
-    <!-- Research Title Banner -->
-    <div style="margin-bottom: 40px; padding: 20px 0; border-bottom: 1px solid var(--glass-border);">
-      <h1 style="
-        font-family: var(--font-display);
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: var(--text-primary);
-        line-height: 1.35;
-        margin-bottom: 12px;
-        letter-spacing: -0.5px;
-      ">How does comparing your own lives to idealized posts on social media affect teenagers’ self-esteem and depressive symptoms?</h1>
-      <div style="
-        font-size: 0.95rem;
-        color: var(--text-secondary);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      ">Independent Academic Research Paper</div>
-    </div>
 
     <!-- TAB 1: Home Page -->
     <div id="home" class="tab-content active">
+      <!-- Research Title Banner -->
+      <div style="margin-bottom: 40px; padding: 20px 0; border-bottom: 1px solid var(--glass-border);">
+        <h1 style="
+          font-family: var(--font-display);
+          font-size: 2.2rem;
+          font-weight: 800;
+          color: var(--text-primary);
+          line-height: 1.35;
+          margin-bottom: 12px;
+          letter-spacing: -0.5px;
+        ">How does comparing your own lives to idealized posts on social media affect teenagers’ self-esteem and depressive symptoms?</h1>
+        <div style="
+          font-size: 0.95rem;
+          color: var(--text-secondary);
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        ">Independent Academic Research Paper</div>
+      </div>
+
       <div class="section-grid">
         <!-- Text details -->
         <div class="glass-card" style="padding: 40px; display: flex; flex-direction: column; gap: 24px;">
@@ -510,6 +511,9 @@
     const tabs = document.querySelectorAll('.nav-tab');
     const sections = document.querySelectorAll('.tab-content');
     const activePill = document.querySelector('.nav-active-pill');
+    const mainContent = document.querySelector('.main-content');
+    const tabOrder = ['home', 'documents', 'about'];
+    let isTransitioning = false;
 
     function updateActivePill() {
       const activeTab = document.querySelector('.nav-tab.active');
@@ -523,22 +527,55 @@
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
+        if (isTransitioning) return;
+
         const targetTab = tab.getAttribute('data-tab');
-        
-        // Update active tab button
+        const activeTabBtn = document.querySelector('.nav-tab.active');
+        const currentTab = activeTabBtn ? activeTabBtn.getAttribute('data-tab') : null;
+
+        if (currentTab === targetTab) return;
+
+        isTransitioning = true;
+
+        const currentIndex = tabOrder.indexOf(currentTab);
+        const targetIndex = tabOrder.indexOf(targetTab);
+        const direction = targetIndex > currentIndex ? 'forward' : 'backward';
+
+        // 1. Mark active tab button immediately
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
 
-        // Update active section
-        sections.forEach(s => {
-          s.classList.remove('active');
-          if (s.id === targetTab) {
-            s.classList.add('active');
+        const currentSection = document.getElementById(currentTab);
+        const targetSection = document.getElementById(targetTab);
+
+        if (currentSection && targetSection) {
+          // 2. Set up transition direction and active classes
+          mainContent.classList.add('transitioning', direction);
+          currentSection.classList.add('leaving');
+          targetSection.classList.add('active', 'entering');
+
+          // Scroll to top
+          window.scrollTo(0, 0);
+
+          // 3. Wait for the animation to complete (800ms)
+          setTimeout(() => {
+            currentSection.classList.remove('active', 'leaving');
+            targetSection.classList.remove('entering');
+            mainContent.classList.remove('transitioning', 'forward', 'backward');
+            isTransitioning = false;
+          }, 800);
+        } else {
+          // Fallback
+          sections.forEach(s => s.classList.remove('active'));
+          if (targetSection) {
+            targetSection.classList.add('active');
           }
-        });
+          window.scrollTo(0, 0);
+          isTransitioning = false;
+        }
 
         // Reposition active indicator pill
-        updateActivePill();
+        setTimeout(updateActivePill, 20);
       });
     });
 
