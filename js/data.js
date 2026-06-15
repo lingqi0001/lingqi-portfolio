@@ -138,7 +138,7 @@ const PORTFOLIO_DATA = {
           "Conducted semi-structured interviews with five psychology and technology experts",
           "Proposed media literacy and parental guidance frameworks for teenager protection"
         ],
-        link: "paper.html"
+        link: "socialmediaportfolio.html"
       }
     ],
     courses: {
@@ -324,7 +324,7 @@ const PORTFOLIO_DATA = {
           "对5位心理学和社交媒体技术领域的专家进行了半结构化访谈",
           "提出了旨在保护青少年心理健康的媒介素养和家长引导框架"
         ],
-        link: "paper.html"
+        link: "socialmediaportfolio.html"
       }
     ],
     courses: {

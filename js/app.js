@@ -794,7 +794,7 @@ function initDesignGallery() {
 
 function initPaperPrompt() {
   const pathname = window.location.pathname;
-  if (pathname.includes('paper.html')) {
+  if (pathname.includes('socialmediaportfolio.html')) {
     return;
   }
 
@@ -885,7 +885,7 @@ function initPaperPrompt() {
       flex-direction: column;
       gap: 12px;
     ">
-      <a href="paper.html" id="btn-goto-paper" style="
+      <a href="socialmediaportfolio.html" id="btn-goto-paper" style="
         display: block;
         padding: 14px 24px;
         background: var(--text-primary);
