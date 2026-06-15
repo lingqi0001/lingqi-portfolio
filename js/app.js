@@ -805,7 +805,7 @@ function initPaperPrompt() {
   const promptTexts = {
     en: {
       title: "Featured Research Paper",
-      message: "Would you like to view Moss Mo's independent research on <strong>Social Media and Teen Mental Health</strong>?",
+      message: "Would you like to view Lingqi Mo's independent research on <strong>Social Media and Teen Mental Health</strong>?",
       yes: "View Research Paper",
       no: "Explore Portfolio"
     },

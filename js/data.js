@@ -129,7 +129,7 @@ const PORTFOLIO_DATA = {
       },
       {
         id: "teen-mental-health-research",
-        title: "Social Media and Teen Mental Health Research",
+        title: "Research: How Social Media Comparison Affects Teen Mental Health",
         category: ["ux", "humanities"],
         tags: ["Mental Health", "Social Media", "Interaction Design", "Academic Research"],
         description: "An independent research paper analyzing the effects of upward comparison and algorithms on adolescent mental health.",
@@ -315,7 +315,7 @@ const PORTFOLIO_DATA = {
       },
       {
         id: "teen-mental-health-research",
-        title: "社交媒体与青少年心理健康研究",
+        title: "研究：社交媒体对比如何影响青少年心理健康",
         category: ["ux", "humanities"],
         tags: ["心理健康", "社交媒体", "交互设计", "学术研究"],
         description: "一项关于向上社会比较和算法推荐对青少年心理健康影响的独立研究报告。",
