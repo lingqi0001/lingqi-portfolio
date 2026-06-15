@@ -68,7 +68,8 @@ const UI_TRANSLATIONS = {
     "dash.toeflTarget": "Target: 108–110",
     "dash.volunteerOrgs": "Organizations",
     "dash.galleryTitle": "Design Gallery",
-    "dash.galleryInstruction": "Hold and spin"
+    "dash.galleryInstruction": "Hold and spin",
+    "proj.viewProject": "View Details"
   },
   zh: {
     "header.subtitle": "个人网站",
@@ -127,7 +128,8 @@ const UI_TRANSLATIONS = {
     "dash.toeflTarget": "目标：108–110",
     "dash.volunteerOrgs": "机构",
     "dash.galleryTitle": "设计画廊",
-    "dash.galleryInstruction": "按住光晕旋转"
+    "dash.galleryInstruction": "按住光晕旋转",
+    "proj.viewProject": "查看详情"
   }
 };
 
@@ -299,8 +301,9 @@ function initLanguageSwitch() {
         } else if (currentPath.includes('/cn/')) {
           return; // Already there
         } else {
-          // We are at root, go to cn/index.html
-          targetUrl = isLocalFile ? 'cn/index.html' : '/cn/';
+          // Dynamic redirect depending on current file
+          const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+          targetUrl = isLocalFile ? `cn/${filename}` : `/cn/${filename}`;
         }
       } else {
         if (currentPath.includes('/cn/')) {
@@ -308,8 +311,9 @@ function initLanguageSwitch() {
         } else if (currentPath.includes('/en/')) {
           return; // Already there
         } else {
-          // We are at root, go to en/index.html
-          targetUrl = isLocalFile ? 'en/index.html' : '/en/';
+          // Dynamic redirect depending on current file
+          const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+          targetUrl = isLocalFile ? `en/${filename}` : `/en/${filename}`;
         }
       }
       
@@ -417,6 +421,30 @@ function initProjects() {
           .join(" + ");
         const dataCat = categoryList.join(" ");
 
+        const actionBtn = p.link ? `
+          <div class="project-action-wrapper" style="margin-top: 16px;">
+            <a href="${p.link}" class="project-link-btn" style="
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+              padding: 10px 20px;
+              background: var(--text-primary);
+              color: var(--action-btn-text);
+              border-radius: 20px;
+              text-decoration: none;
+              font-family: var(--font-display);
+              font-size: 0.85rem;
+              font-weight: 600;
+              letter-spacing: 0.5px;
+              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+              box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'">
+              <span>${UI_TRANSLATIONS[currentLang]["proj.viewProject"] || 'View Details'}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        ` : '';
+
         return `
           <div class="glass-card project-card" data-category="${dataCat}">
             <div class="project-category">${categoryText}</div>
@@ -428,6 +456,7 @@ function initProjects() {
             <ul class="project-highlights">
               ${p.highlights.map(h => `<li>${h}</li>`).join('')}
             </ul>
+            ${actionBtn}
           </div>
         `;
       }).join('');

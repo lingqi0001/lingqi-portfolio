@@ -126,6 +126,19 @@ const PORTFOLIO_DATA = {
           "Organized club tournaments, attracting active members and enriching campus athletic culture",
           "Managed practice schedules and court logistics, fostering skills development and team cohesion"
         ]
+      },
+      {
+        id: "teen-mental-health-research",
+        title: "Social Media and Teen Mental Health Research",
+        category: ["ux", "humanities"],
+        tags: ["Mental Health", "Social Media", "Interaction Design", "Academic Research"],
+        description: "An independent research paper analyzing the effects of upward comparison and algorithms on adolescent mental health.",
+        highlights: [
+          "Investigated depression rate surges since 2010 linked to highlight reel comparison",
+          "Conducted semi-structured interviews with five psychology and technology experts",
+          "Proposed media literacy and parental guidance frameworks for teenager protection"
+        ],
+        link: "paper.html"
       }
     ],
     courses: {
@@ -299,6 +312,19 @@ const PORTFOLIO_DATA = {
           "组织并筹办校内羽毛球赛事，为社员提供竞技与交流的平台",
           "统筹日常训练计划，合理调配场地资源，提升社团凝聚力"
         ]
+      },
+      {
+        id: "teen-mental-health-research",
+        title: "社交媒体与青少年心理健康研究",
+        category: ["ux", "humanities"],
+        tags: ["心理健康", "社交媒体", "交互设计", "学术研究"],
+        description: "一项关于向上社会比较和算法推荐对青少年心理健康影响的独立研究报告。",
+        highlights: [
+          "调研了2010年以来因“精彩集锦”式对比导致的青少年抑郁率上升",
+          "对5位心理学和社交媒体技术领域的专家进行了半结构化访谈",
+          "提出了旨在保护青少年心理健康的媒介素养和家长引导框架"
+        ],
+        link: "paper.html"
       }
     ],
     courses: {
