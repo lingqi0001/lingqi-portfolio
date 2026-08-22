@@ -12,6 +12,7 @@ if (pathname.includes('/cn/') || pathname.endsWith('/cn') || pathname.endsWith('
 
 const UI_TRANSLATIONS = {
   en: {
+    "page.title": "Lingqi Mo's Personal Website",
     "header.subtitle": "Personal Website",
     "nav.overview": "Overview",
     "nav.academic": "Academic",
@@ -77,7 +78,8 @@ const UI_TRANSLATIONS = {
     "proj.viewProject": "View Details"
   },
   zh: {
-    "header.subtitle": "个人网站",
+    "page.title": "莫令琪的个人主页",
+    "header.subtitle": "个人主页",
     "nav.overview": "概览",
     "nav.academic": "学术背景",
     "nav.projectsDesktop": "项目与领导力",
@@ -358,6 +360,11 @@ function initLanguageSwitch() {
 function updateStaticTexts(lang) {
   const dict = UI_TRANSLATIONS[lang];
   if (!dict) return;
+
+  // Page title
+  if (dict["page.title"]) {
+    document.title = dict["page.title"];
+  }
 
   // Static HTML labels
   document.querySelectorAll('[data-i18n]').forEach(el => {
