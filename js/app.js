@@ -1406,6 +1406,499 @@ function initCaseStudyModal() {
   });
 }
 
+// ==========================================
+// Three-Layer Navigation Showcase Controllers & Renderer
+// ==========================================
+let v4IsNavExpanded = false;
+let v4CurrentPrimaryTab = 'school';
+
+function v4UpdatePrimaryTabUI() {
+  const schoolBtn = document.getElementById('v4_btnMorphSchool');
+  const clubBtn = document.getElementById('v4_btnMorphClub');
+  const statusText = document.getElementById('v4_currentStatusText');
+  if (!schoolBtn || !clubBtn || !statusText) return;
+
+  if (v4CurrentPrimaryTab === 'school') {
+    schoolBtn.style.color = '#ffffff';
+    schoolBtn.style.background = '#2C2C2E';
+    clubBtn.style.color = '#8E8E93';
+    clubBtn.style.background = 'transparent';
+    statusText.innerText = "School News";
+  } else {
+    schoolBtn.style.color = '#8E8E93';
+    schoolBtn.style.background = 'transparent';
+    clubBtn.style.color = '#ffffff';
+    clubBtn.style.background = '#2C2C2E';
+    statusText.innerText = "Club News";
+  }
+}
+
+function v4SelectPrimaryTab(tabType, e) {
+  if (e) e.stopPropagation();
+  v4CurrentPrimaryTab = tabType;
+  if (v4IsNavExpanded) {
+    v4CollapseMorphNav();
+  } else {
+    v4UpdatePrimaryTabUI();
+  }
+}
+
+function v4SelectSubTab(tabId, e) {
+  if (e) e.stopPropagation();
+  const tabs = ['joint', 'discover', 'events'];
+  const names = { 'joint': 'My Joint Clubs', 'discover': 'Discover New Clubs', 'events': 'Recent Club Events' };
+  const statusText = document.getElementById('v4_currentStatusText');
+
+  tabs.forEach(id => {
+    const btn = document.getElementById('v4_subTab_' + id);
+    if (!btn) return;
+    if (id === tabId) {
+      btn.style.color = '#ffffff';
+      btn.style.background = '#2C2C2E';
+      if (statusText) statusText.innerText = names[id];
+    } else {
+      btn.style.color = '#8E8E93';
+      btn.style.background = 'transparent';
+    }
+  });
+}
+
+function v4ExpandMorphNav(e) {
+  if (e) e.stopPropagation();
+  if (v4IsNavExpanded) return;
+  v4IsNavExpanded = true;
+
+  const schoolBtn = document.getElementById('v4_btnMorphSchool');
+  const clubBtn = document.getElementById('v4_btnMorphClub');
+  const schoolText = document.getElementById('v4_textSchoolFull');
+  const clubText = document.getElementById('v4_textClubFull');
+  const discoverBlock = document.getElementById('v4_discoverPillBlock');
+  const iconWrapper = document.getElementById('v4_discoverIconWrapper');
+  const subTabs = document.getElementById('v4_subClubTabs');
+
+  if (!schoolBtn || !clubBtn || !schoolText || !clubText || !discoverBlock || !iconWrapper || !subTabs) return;
+
+  // 1. S and C become plain text
+  schoolBtn.style.color = '#8E8E93';
+  schoolBtn.style.background = 'transparent';
+  clubBtn.style.color = '#8E8E93';
+  clubBtn.style.background = 'transparent';
+
+  // 2. Discover container removes background to let child active tabs render background
+  discoverBlock.style.background = 'transparent';
+
+  // 3. Text morphing animation
+  schoolText.style.maxWidth = "0px";
+  schoolText.style.opacity = "0";
+  clubText.style.maxWidth = "0px";
+  clubText.style.opacity = "0";
+
+  schoolBtn.style.maxWidth = "26px";
+  clubBtn.style.maxWidth = "26px";
+
+  discoverBlock.style.width = "calc(100% - 60px)";
+
+  iconWrapper.style.opacity = "0";
+  iconWrapper.style.transform = "scale(0.5)";
+  subTabs.style.opacity = "1";
+  subTabs.style.pointerEvents = "auto";
+
+  v4SelectSubTab('joint', null);
+}
+
+function v4CollapseMorphNav() {
+  if (!v4IsNavExpanded) return;
+  v4IsNavExpanded = false;
+
+  const schoolBtn = document.getElementById('v4_btnMorphSchool');
+  const clubBtn = document.getElementById('v4_btnMorphClub');
+  const schoolText = document.getElementById('v4_textSchoolFull');
+  const clubText = document.getElementById('v4_textClubFull');
+  const discoverBlock = document.getElementById('v4_discoverPillBlock');
+  const iconWrapper = document.getElementById('v4_discoverIconWrapper');
+  const subTabs = document.getElementById('v4_subClubTabs');
+
+  if (!schoolBtn || !clubBtn || !schoolText || !clubText || !discoverBlock || !iconWrapper || !subTabs) return;
+
+  v4UpdatePrimaryTabUI();
+
+  discoverBlock.style.background = '#2C2C2E';
+
+  schoolText.style.maxWidth = "80px";
+  schoolText.style.opacity = "1";
+  clubText.style.maxWidth = "80px";
+  clubText.style.opacity = "1";
+
+  schoolBtn.style.maxWidth = "120px";
+  clubBtn.style.maxWidth = "120px";
+
+  discoverBlock.style.width = "28px";
+
+  iconWrapper.style.opacity = "1";
+  iconWrapper.style.transform = "scale(1)";
+  subTabs.style.opacity = "0";
+  subTabs.style.pointerEvents = "none";
+}
+
+// Variation 1 & 2 & 3 Interactive Handlers
+function v1SelectTab(type, val) {
+  const status = document.getElementById('v1_status');
+  const sBtn = document.getElementById('v1_l2_school');
+  const cBtn = document.getElementById('v1_l2_club');
+  const compassBtn = document.getElementById('v1_l2_compass');
+  const l3Container = document.getElementById('v1_l3_container');
+  const jBtn = document.getElementById('v1_l3_joint');
+  const dBtn = document.getElementById('v1_l3_discover');
+
+  if (type === 'l2') {
+    if (val === 'school') {
+      if (sBtn) { sBtn.style.color = '#fff'; sBtn.style.background = '#2C2C2E'; }
+      if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+      if (compassBtn) { compassBtn.style.color = '#8E8E93'; compassBtn.style.background = 'transparent'; }
+      if (l3Container) { l3Container.style.display = 'none'; }
+      if (status) status.innerText = 'School News';
+    } else if (val === 'club') {
+      if (cBtn) { cBtn.style.color = '#fff'; cBtn.style.background = '#2C2C2E'; }
+      if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+      if (compassBtn) { compassBtn.style.color = '#8E8E93'; compassBtn.style.background = 'transparent'; }
+      if (l3Container) { l3Container.style.display = 'none'; }
+      if (status) status.innerText = 'Club News';
+    } else if (val === 'compass') {
+      if (compassBtn) { compassBtn.style.color = '#fff'; compassBtn.style.background = '#2C2C2E'; }
+      if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+      if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+      if (l3Container) { l3Container.style.display = 'flex'; }
+      if (status) status.innerText = 'My Joint Clubs';
+    }
+  } else if (type === 'l3') {
+    if (compassBtn) { compassBtn.style.color = '#fff'; compassBtn.style.background = '#2C2C2E'; }
+    if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+    if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+    if (val === 'joint') {
+      if (jBtn) { jBtn.style.color = '#fff'; jBtn.style.borderBottom = '2px solid #fff'; }
+      if (dBtn) { dBtn.style.color = '#8E8E93'; dBtn.style.borderBottom = 'none'; }
+      if (status) status.innerText = 'My Joint Clubs';
+    } else {
+      if (dBtn) { dBtn.style.color = '#fff'; dBtn.style.borderBottom = '2px solid #fff'; }
+      if (jBtn) { jBtn.style.color = '#8E8E93'; jBtn.style.borderBottom = 'none'; }
+      if (status) status.innerText = 'Discover New Clubs';
+    }
+  }
+}
+
+function v2SelectL2(val) {
+  const sBtn = document.getElementById('v2_l2_school');
+  const cBtn = document.getElementById('v2_l2_club');
+  const compassBtn = document.getElementById('v2_l2_compass');
+  const l3Container = document.getElementById('v2_l3_container');
+  const status = document.getElementById('v2_status');
+
+  if (val === 'school') {
+    if (sBtn) { sBtn.style.color = '#fff'; sBtn.style.background = '#2C2C2E'; }
+    if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+    if (compassBtn) { compassBtn.style.color = '#8E8E93'; compassBtn.style.background = 'transparent'; }
+    if (l3Container) { l3Container.style.display = 'none'; }
+    if (status) status.innerText = 'School News';
+  } else if (val === 'club') {
+    if (cBtn) { cBtn.style.color = '#fff'; cBtn.style.background = '#2C2C2E'; }
+    if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+    if (compassBtn) { compassBtn.style.color = '#8E8E93'; compassBtn.style.background = 'transparent'; }
+    if (l3Container) { l3Container.style.display = 'none'; }
+    if (status) status.innerText = 'Club News';
+  } else if (val === 'compass') {
+    if (compassBtn) { compassBtn.style.color = '#fff'; compassBtn.style.background = '#2C2C2E'; }
+    if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+    if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+    if (l3Container) { l3Container.style.display = 'block'; }
+    v2SelectTab('joint');
+  }
+}
+
+function v2SelectTab(val) {
+  const sBtn = document.getElementById('v2_l2_school');
+  const cBtn = document.getElementById('v2_l2_club');
+  const compassBtn = document.getElementById('v2_l2_compass');
+  const l3Container = document.getElementById('v2_l3_container');
+  if (l3Container) { l3Container.style.display = 'block'; }
+  if (compassBtn) { compassBtn.style.color = '#fff'; compassBtn.style.background = '#2C2C2E'; }
+  if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+  if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+
+  const tabs = ['joint', 'discover', 'events'];
+  const names = { 'joint': 'My Joint Clubs', 'discover': 'Discover New Clubs', 'events': 'Recent Club Events' };
+  const status = document.getElementById('v2_status');
+  tabs.forEach(id => {
+    const btn = document.getElementById('v2_l3_' + id);
+    if (!btn) return;
+    if (id === val) {
+      btn.style.color = '#fff'; btn.style.background = '#2C2C2E';
+      if (status) status.innerText = names[id];
+    } else {
+      btn.style.color = '#8E8E93'; btn.style.background = 'transparent';
+    }
+  });
+}
+
+function v3SelectL2(val) {
+  const sBtn = document.getElementById('v3_l2_school');
+  const cBtn = document.getElementById('v3_l2_club');
+  const compassBtn = document.getElementById('v3_l2_compass');
+  const railContainer = document.getElementById('v3_rail_container');
+  const contentEl = document.getElementById('v3_content');
+  const status = document.getElementById('v3_status');
+
+  if (val === 'school') {
+    if (sBtn) { sBtn.style.color = '#fff'; sBtn.style.background = '#2C2C2E'; }
+    if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+    if (compassBtn) { compassBtn.style.color = '#8E8E93'; compassBtn.style.background = 'transparent'; }
+    if (railContainer) { railContainer.style.display = 'none'; }
+    if (contentEl) { contentEl.style.marginLeft = '14px'; }
+    if (status) status.innerText = 'School News';
+  } else if (val === 'club') {
+    if (cBtn) { cBtn.style.color = '#fff'; cBtn.style.background = '#2C2C2E'; }
+    if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+    if (compassBtn) { compassBtn.style.color = '#8E8E93'; compassBtn.style.background = 'transparent'; }
+    if (railContainer) { railContainer.style.display = 'none'; }
+    if (contentEl) { contentEl.style.marginLeft = '14px'; }
+    if (status) status.innerText = 'Club News';
+  } else if (val === 'compass') {
+    if (compassBtn) { compassBtn.style.color = '#fff'; compassBtn.style.background = '#2C2C2E'; }
+    if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+    if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+    if (railContainer) { railContainer.style.display = 'flex'; }
+    if (contentEl) { contentEl.style.marginLeft = '0'; }
+    v3SelectRail('joint');
+  }
+}
+
+function v3SelectRail(val) {
+  const sBtn = document.getElementById('v3_l2_school');
+  const cBtn = document.getElementById('v3_l2_club');
+  const compassBtn = document.getElementById('v3_l2_compass');
+  const railContainer = document.getElementById('v3_rail_container');
+  const contentEl = document.getElementById('v3_content');
+  if (railContainer) { railContainer.style.display = 'flex'; }
+  if (contentEl) { contentEl.style.marginLeft = '0'; }
+  if (compassBtn) { compassBtn.style.color = '#fff'; compassBtn.style.background = '#2C2C2E'; }
+  if (sBtn) { sBtn.style.color = '#8E8E93'; sBtn.style.background = 'transparent'; }
+  if (cBtn) { cBtn.style.color = '#8E8E93'; cBtn.style.background = 'transparent'; }
+
+  const rails = ['joint', 'discover', 'events'];
+  const names = { 'joint': 'My Joint Clubs', 'discover': 'Discover New Clubs', 'events': 'Recent Club Events' };
+  const status = document.getElementById('v3_status');
+  rails.forEach(id => {
+    const btn = document.getElementById('v3_rail_' + id);
+    if (!btn) return;
+    if (id === val) {
+      btn.style.color = '#fff'; btn.style.background = '#2C2C2E';
+      if (status) status.innerText = names[id];
+    } else {
+      btn.style.color = '#8E8E93'; btn.style.background = 'transparent';
+    }
+  });
+}
+
+window.v4SelectPrimaryTab = v4SelectPrimaryTab;
+window.v4SelectSubTab = v4SelectSubTab;
+window.v4ExpandMorphNav = v4ExpandMorphNav;
+window.v4CollapseMorphNav = v4CollapseMorphNav;
+window.v1SelectTab = v1SelectTab;
+window.v2SelectL2 = v2SelectL2;
+window.v2SelectTab = v2SelectTab;
+window.v3SelectL2 = v3SelectL2;
+window.v3SelectRail = v3SelectRail;
+
+function renderThreeLayerShowcase(isZh) {
+  const titleText = isZh ? '多形态导航布局演进与交互实验场' : 'Multi-Variant Navigation Evolution & Interactive Prototype Playground';
+  const badgeText = isZh ? '4 种形态实测' : '4 Layout Variations';
+  const subtitleText = isZh 
+    ? '下方为 4 种导航形态的高保真交互模拟器。在「方案四 (Apple Morph)」中点击右侧指南针图标，可实时体验苹果级平滑流体变形动效。' 
+    : 'High-fidelity interactive prototype simulators for the 4 evaluated variations. In Variation 4, click the compass icon on the right to test the fluid morphing animation in real time.';
+
+  const v1Tag = isZh ? 'A-B-A 视觉跳跃' : 'A-B-A Visual Jump';
+  const v1Note = isZh ? '文字-按钮-文字 破坏认知层级' : 'Text-Button-Text breaks hierarchy';
+
+  const v2Tag = isZh ? '按键视觉过载' : 'Button Overload';
+  const v2Note = isZh ? '双排高密度胶囊按钮造成操作疲劳' : 'Stacked button rows cause cognitive fatigue';
+
+  const v3Tag = isZh ? '侧边空间解耦' : 'Spatial Decoupling';
+  const v3Note = isZh ? '解耦至左侧纵向，但侵占内容区宽度' : 'Decoupled to vertical rail, takes content width';
+
+  const v4Tag = isZh ? '苹果流体变形 · 最终选定' : 'Apple Morph · Selected';
+  const v4Note = isZh ? '点击指南针展开，点击 S / C 折叠还原' : 'Click compass to expand, click S/C to collapse';
+
+  return `
+    <div class="cs-showcase-container">
+      <div class="cs-showcase-header">
+        <div class="cs-showcase-title-row">
+          <span class="cs-showcase-title">${titleText}</span>
+          <span class="cs-showcase-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            ${badgeText}
+          </span>
+        </div>
+        <div class="cs-showcase-subtitle">${subtitleText}</div>
+      </div>
+
+      <div class="cs-variations-grid">
+        <!-- Variation 1: Text Link -->
+        <div class="cs-nav-sim-card">
+          <div style="padding: 16px 14px 10px; flex-shrink: 0;">
+            <div class="cs-card-header-badge">
+              <span>Variation 1: Text Link</span>
+              <span class="cs-card-flaw-tag">${v1Tag}</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-end; height: 28px;">
+              <button style="font-size: 19px; font-weight: 700; color: #fff; line-height: 1; background: none; border: none; cursor: pointer; padding: 0;">News</button>
+              <button style="font-size: 15px; font-weight: 700; color: #8E8E93; line-height: 1; margin-bottom: 1px; background: none; border: none; cursor: pointer; padding: 0;">Tools</button>
+              <button style="font-size: 15px; font-weight: 700; color: #8E8E93; line-height: 1; margin-bottom: 1px; background: none; border: none; cursor: pointer; padding: 0;">Social</button>
+            </div>
+            <div style="margin-top: 10px; height: 32px;">
+              <div style="display: flex; background: rgba(255, 255, 255, 0.1); border-radius: 9px; padding: 3px; height: 100%; align-items: center; gap: 2px;">
+                <button id="v1_l2_school" onclick="v1SelectTab('l2', 'school')" style="flex: 1; text-align: center; font-size: 11px; font-weight: 700; height: 100%; display: flex; align-items: center; justify-content: center; color: #8E8E93; background: transparent; border-radius: 6px; border: none; cursor: pointer;">School News</button>
+                <button id="v1_l2_club" onclick="v1SelectTab('l2', 'club')" style="flex: 1; text-align: center; font-size: 11px; font-weight: 700; height: 100%; display: flex; align-items: center; justify-content: center; color: #8E8E93; background: transparent; border-radius: 6px; border: none; cursor: pointer;">Club News</button>
+                <button id="v1_l2_compass" onclick="v1SelectTab('l2', 'compass')" style="width: 26px; height: 100%; display: flex; align-items: center; justify-content: center; background: #2C2C2E; border-radius: 6px; color: #fff; border: none; cursor: pointer; flex-shrink: 0;" title="Discover">
+                  <svg style="width: 13px; height: 13px;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                </button>
+              </div>
+            </div>
+            <div id="v1_l3_container" style="display: flex; gap: 12px; align-items: flex-end; margin-top: 10px; height: 28px;">
+              <button id="v1_l3_joint" onclick="v1SelectTab('l3', 'joint')" style="font-size: 13px; font-weight: 700; color: #fff; border-bottom: 2px solid #fff; padding-bottom: 2px; line-height: 1; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer;">My Joint</button>
+              <button id="v1_l3_discover" onclick="v1SelectTab('l3', 'discover')" style="font-size: 13px; font-weight: 700; color: #8E8E93; padding-bottom: 2px; line-height: 1; background: none; border: none; cursor: pointer;">Discover</button>
+            </div>
+          </div>
+          <div style="flex: 1; border-top: 1px solid rgba(255, 255, 255, 0.06); padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #8E8E93; background: rgba(0,0,0,0.15); text-align: center;">
+            <span id="v1_status" style="font-weight: 700; color: #fff; margin-bottom: 4px; font-size: 12px;">My Joint Clubs</span>
+            <span style="font-size: 10px; color: #71717a;">${v1Note}</span>
+          </div>
+        </div>
+
+        <!-- Variation 2: Buttons -->
+        <div class="cs-nav-sim-card">
+          <div style="padding: 16px 14px 10px; flex-shrink: 0;">
+            <div class="cs-card-header-badge">
+              <span>Variation 2: Buttons</span>
+              <span class="cs-card-flaw-tag">${v2Tag}</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-end; height: 28px;">
+              <button style="font-size: 19px; font-weight: 700; color: #fff; line-height: 1; background: none; border: none; cursor: pointer; padding: 0;">News</button>
+              <button style="font-size: 15px; font-weight: 700; color: #8E8E93; line-height: 1; margin-bottom: 1px; background: none; border: none; cursor: pointer; padding: 0;">Tools</button>
+              <button style="font-size: 15px; font-weight: 700; color: #8E8E93; line-height: 1; margin-bottom: 1px; background: none; border: none; cursor: pointer; padding: 0;">Social</button>
+            </div>
+            <div style="margin-top: 10px; height: 32px;">
+              <div style="display: flex; background: rgba(255, 255, 255, 0.1); border-radius: 9px; padding: 3px; height: 100%; align-items: center; gap: 2px;">
+                <button id="v2_l2_school" onclick="v2SelectL2('school')" style="flex: 1; text-align: center; font-size: 11px; font-weight: 700; height: 100%; display: flex; align-items: center; justify-content: center; color: #8E8E93; background: transparent; border-radius: 6px; border: none; cursor: pointer;">School News</button>
+                <button id="v2_l2_club" onclick="v2SelectL2('club')" style="flex: 1; text-align: center; font-size: 11px; font-weight: 700; height: 100%; display: flex; align-items: center; justify-content: center; color: #8E8E93; background: transparent; border-radius: 6px; border: none; cursor: pointer;">Club News</button>
+                <button id="v2_l2_compass" onclick="v2SelectL2('compass')" style="width: 26px; height: 100%; display: flex; align-items: center; justify-content: center; background: #2C2C2E; border-radius: 6px; color: #fff; border: none; cursor: pointer; flex-shrink: 0;" title="Discover">
+                  <svg style="width: 13px; height: 13px;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                </button>
+              </div>
+            </div>
+            <div id="v2_l3_container" style="margin-top: 10px; height: 32px;">
+              <div style="display: flex; background: rgba(255, 255, 255, 0.1); border-radius: 9px; padding: 3px; height: 100%; align-items: center; gap: 2px;">
+                <button id="v2_l3_joint" onclick="v2SelectTab('joint')" style="flex: 1; text-align: center; font-size: 10px; font-weight: 700; height: 100%; background: #2C2C2E; border-radius: 6px; color: #fff; border: none; cursor: pointer;">My Joint</button>
+                <button id="v2_l3_discover" onclick="v2SelectTab('discover')" style="flex: 1; text-align: center; font-size: 10px; font-weight: 700; height: 100%; color: #8E8E93; background: transparent; border-radius: 6px; border: none; cursor: pointer;">Discover</button>
+                <button id="v2_l3_events" onclick="v2SelectTab('events')" style="flex: 1; text-align: center; font-size: 10px; font-weight: 700; height: 100%; color: #8E8E93; background: transparent; border-radius: 6px; border: none; cursor: pointer;">Events</button>
+              </div>
+            </div>
+          </div>
+          <div style="flex: 1; border-top: 1px solid rgba(255, 255, 255, 0.06); padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #8E8E93; background: rgba(0,0,0,0.15); text-align: center;">
+            <span id="v2_status" style="font-weight: 700; color: #fff; margin-bottom: 4px; font-size: 12px;">My Joint Clubs</span>
+            <span style="font-size: 10px; color: #71717a;">${v2Note}</span>
+          </div>
+        </div>
+
+        <!-- Variation 3: Vertical Icons -->
+        <div class="cs-nav-sim-card">
+          <div style="padding: 16px 14px 10px; flex-shrink: 0;">
+            <div class="cs-card-header-badge">
+              <span>Variation 3: Vertical Icons</span>
+              <span class="cs-card-flaw-tag">${v3Tag}</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-end; height: 28px;">
+              <button style="font-size: 19px; font-weight: 700; color: #fff; line-height: 1; background: none; border: none; cursor: pointer; padding: 0;">News</button>
+              <button style="font-size: 15px; font-weight: 700; color: #8E8E93; line-height: 1; margin-bottom: 1px; background: none; border: none; cursor: pointer; padding: 0;">Tools</button>
+              <button style="font-size: 15px; font-weight: 700; color: #8E8E93; line-height: 1; margin-bottom: 1px; background: none; border: none; cursor: pointer; padding: 0;">Social</button>
+            </div>
+            <div style="margin-top: 10px; height: 32px;">
+              <div style="display: flex; background: rgba(255, 255, 255, 0.1); border-radius: 9px; padding: 3px; height: 100%; align-items: center; gap: 2px;">
+                <button id="v3_l2_school" onclick="v3SelectL2('school')" style="flex: 1; text-align: center; font-size: 11px; font-weight: 700; height: 100%; display: flex; align-items: center; justify-content: center; color: #8E8E93; background: transparent; border-radius: 6px; border: none; cursor: pointer;">School News</button>
+                <button id="v3_l2_club" onclick="v3SelectL2('club')" style="flex: 1; text-align: center; font-size: 11px; font-weight: 700; height: 100%; display: flex; align-items: center; justify-content: center; color: #8E8E93; background: transparent; border-radius: 6px; border: none; cursor: pointer;">Club News</button>
+                <button id="v3_l2_compass" onclick="v3SelectL2('compass')" style="width: 26px; height: 100%; display: flex; align-items: center; justify-content: center; background: #2C2C2E; border-radius: 6px; color: #fff; border: none; cursor: pointer; flex-shrink: 0;" title="Discover">
+                  <svg style="width: 13px; height: 13px;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex: 1; min-height: 0; margin-top: 8px;">
+            <div id="v3_rail_container" style="display: flex; flex-direction: column; gap: 6px; padding: 0 6px 14px 14px; flex-shrink: 0;">
+              <button id="v3_rail_joint" onclick="v3SelectRail('joint')" style="width: 32px; height: 32px; background: #2C2C2E; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #fff; border: none; cursor: pointer;" title="My Joint">
+                <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </button>
+              <button id="v3_rail_discover" onclick="v3SelectRail('discover')" style="width: 32px; height: 32px; background: transparent; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #8E8E93; border: none; cursor: pointer;" title="Discover">
+                <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+              </button>
+              <button id="v3_rail_events" onclick="v3SelectRail('events')" style="width: 32px; height: 32px; background: transparent; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #8E8E93; border: none; cursor: pointer;" title="Recent Events">
+                <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </button>
+            </div>
+            <div id="v3_content" style="flex: 1; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #8E8E93; background: rgba(0,0,0,0.2); margin: 0 14px 14px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); text-align: center;">
+              <span id="v3_status" style="font-weight: 700; color: #fff; margin-bottom: 4px; font-size: 12px;">My Joint Clubs</span>
+              <span style="font-size: 10px; color: #71717a;">${v3Note}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Variation 4: Apple Morph -->
+        <div class="cs-nav-sim-card">
+          <div style="padding: 16px 14px 10px; flex-shrink: 0; position: relative; z-index: 20;">
+            <div class="cs-card-header-badge">
+              <span>Variation 4: Apple Morph</span>
+              <span class="cs-card-flaw-tag highlight">${v4Tag}</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-end; height: 28px;">
+              <button style="font-size: 19px; font-weight: 700; color: #fff; line-height: 1; background: none; border: none; cursor: pointer; padding: 0;">News</button>
+              <button style="font-size: 15px; font-weight: 700; color: #8E8E93; line-height: 1; margin-bottom: 1px; background: none; border: none; cursor: pointer; padding: 0;">Tools</button>
+              <button style="font-size: 15px; font-weight: 700; color: #8E8E93; line-height: 1; margin-bottom: 1px; background: none; border: none; cursor: pointer; padding: 0;">Social</button>
+            </div>
+            <div style="margin-top: 10px; height: 32px; width: 100%; position: relative;">
+              <div id="v4_morphNavContainer" style="display: flex; background: rgba(255, 255, 255, 0.1); border-radius: 9px; padding: 3px 34px 3px 3px; height: 100%; align-items: center; gap: 2px; overflow: hidden; position: relative;">
+                
+                <button id="v4_btnMorphSchool" onclick="v4SelectPrimaryTab('school', event)" style="max-width: 120px; flex: 1; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; height: 100%; border-radius: 6px; color: #fff; background: #2C2C2E; border: none; cursor: pointer;" class="apple-morph">
+                  <span>S</span><span id="v4_textSchoolFull" style="max-width: 80px; opacity: 1; overflow: hidden; white-space: nowrap;" class="apple-morph">chool News</span>
+                </button>
+
+                <button id="v4_btnMorphClub" onclick="v4SelectPrimaryTab('club', event)" style="max-width: 120px; flex: 1; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; height: 100%; border-radius: 6px; color: #8E8E93; background: transparent; border: none; cursor: pointer;" class="apple-morph">
+                  <span>C</span><span id="v4_textClubFull" style="max-width: 80px; opacity: 1; overflow: hidden; white-space: nowrap;" class="apple-morph">lub News</span>
+                </button>
+
+                <div id="v4_discoverPillBlock" onclick="v4ExpandMorphNav(event)" style="position: absolute; right: 3px; top: 3px; bottom: 3px; width: 26px; background: #2C2C2E; border-radius: 6px; cursor: pointer; z-index: 20; overflow: hidden;" class="apple-morph" title="Click to expand Discover">
+                  
+                  <div id="v4_discoverIconWrapper" style="position: absolute; right: 0; top: 0; bottom: 0; width: 26px; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 1; transform: scale(1);" class="apple-morph">
+                    <svg style="width: 13px; height: 13px; color: #fff;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                  </div>
+
+                  <div id="v4_subClubTabs" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; gap: 2px; font-size: 10px; font-weight: 700; opacity: 0; pointer-events: none;" class="apple-morph">
+                    <button id="v4_subTab_joint" onclick="v4SelectSubTab('joint', event)" style="flex: 1; height: 100%; color: #fff; background: #2C2C2E; border-radius: 5px; border: none; cursor: pointer; white-space: nowrap; text-align: center; font-size: 9.5px; padding: 0;">My Joint</button>
+                    <button id="v4_subTab_discover" onclick="v4SelectSubTab('discover', event)" style="flex: 1; height: 100%; color: #8E8E93; background: transparent; border-radius: 5px; border: none; cursor: pointer; white-space: nowrap; text-align: center; font-size: 9.5px; padding: 0;">Discover</button>
+                    <button id="v4_subTab_events" onclick="v4SelectSubTab('events', event)" style="flex: 1; height: 100%; color: #8E8E93; background: transparent; border-radius: 5px; border: none; cursor: pointer; white-space: nowrap; text-align: center; font-size: 9.5px; padding: 0;">Events</button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div style="flex: 1; border-top: 1px solid rgba(255, 255, 255, 0.06); padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #8E8E93; background: rgba(0,0,0,0.15); text-align: center;">
+            <span id="v4_currentStatusText" style="font-weight: 700; color: #fff; margin-bottom: 4px; font-size: 12px;">School News</span>
+            <span style="font-size: 10px; color: #71717a;">${v4Note}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function openCaseStudyModal(projectId) {
   initCaseStudyModal();
   const modal = document.getElementById('protocolModal');
@@ -1427,6 +1920,11 @@ function openCaseStudyModal(projectId) {
   const thSpec = isZh ? '设计推演与交互规范说明' : 'UX Analysis & Specification Details';
   const summaryLabel = isZh ? '概要说明' : 'Summary';
 
+  // Render Interactive Prototype Showcase if Three-Layer Navigation Case Study
+  const showcaseHtml = (cs.id === 'three-layer-layout' || projectId === 'chschat-xyz') 
+    ? renderThreeLayerShowcase(isZh) 
+    : '';
+
   const rowsHtml = cs.sections.map(sec => `
     <tr>
       <td style="width: 20%; font-weight: 700; color: var(--text-color);">
@@ -1444,6 +1942,7 @@ function openCaseStudyModal(projectId) {
   `).join('');
 
   body.innerHTML = `
+    ${showcaseHtml}
     <table class="protocol-table">
       <thead>
         <tr>
@@ -1463,6 +1962,13 @@ function openCaseStudyModal(projectId) {
 
   modal.classList.add('active');
   document.body.style.overflow = 'hidden';
+
+  // Initialize V4 state if present
+  if (document.getElementById('v4_btnMorphSchool')) {
+    v4IsNavExpanded = false;
+    v4CurrentPrimaryTab = 'school';
+    v4CollapseMorphNav();
+  }
 }
 
 function closeCaseStudyModal() {

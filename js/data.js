@@ -138,27 +138,29 @@ const PORTFOLIO_DATA = {
           id: "three-layer-layout",
           badgeText: "Three-Layer Navigation Case Study",
           title: "Solving Three-Layer Navigation in a 1/5 Screen Space",
-          subtitle: "How to fit three nested tiers into a narrow panel without 3 horizontal lines, A-B-A visual confusion, or button overload.",
+          subtitle: "How to fit three nested tiers into a narrow 1/5 panel without 3 horizontal lines, A-B-A visual confusion, or button overload through 4 evaluated navigation variations.",
           sections: [
             {
               heading: "1. The 1/5 Width Problem",
-              content: "On our left panel (about 1/5 of the screen width), we faced a real UX problem with three nested levels. Stacking three horizontal tab bars on top of each other is an immediate visual disaster. Most of the time users only see two tiers — Tier 1 (News, Tools, Social) and Tier 2 (School News, Club News, Discover Clubs). But once someone clicks 'Discover Clubs', we have to show joined clubs, clubs to explore, and recent club events. That created a third level inside this tiny space."
+              content: "On our left panel (about 1/5 of the screen width), we faced a severe information density challenge. Stacking three horizontal tab bars in a narrow column creates immediate visual chaos. Normally, users only see two tiers — Tier 1 (News, Tools, Social as text) and Tier 2 (School News, Club News as segmented pills with a Discover compass button). But once a student clicks Discover, we must surface joined clubs, clubs to explore, and recent club events — introducing a third nested level inside this restricted 1/5 width."
             },
             {
-              heading: "2. Why Conventional Approaches Broke Down",
-              content: "A standard guideline for multi-level layouts is that if the first layer sits on top, subsequent layers should move to the left. But all three layers should never be forced into horizontal rows. When designing the third tier, we ran into two traps:",
+              heading: "2. Exploring 4 Navigation Variations",
+              content: "To determine the optimal interaction architecture, we prototyped and evaluated 4 layout variations:",
               bullets: [
-                "Using plain text for Layer 3 (The A-B-A Visual Jump) — If Layer 3 uses text while Layer 1 is text and Layer 2 is buttons, Layer 1 and Layer 3 look identical. By Gestalt grouping, the brain pairs them together, completely destroying the broad-to-specific hierarchy. Two elements separated by two logical levels should never look the same.",
-                "Using buttons for Layer 3 (Button Overload) — If Layer 3 also uses buttons like Layer 2, you get two dense rows of button containers stacked together. No matter how much you tweak the colors or sizes, having that many buttons in a 1/5-width column causes immediate cognitive overload."
+                "Variation 1: Text Link (The A-B-A Visual Jump) — Using plain text links for Layer 3 under Layer 2 buttons. Because Layer 1 is text and Layer 3 is text, Gestalt grouping causes the brain to pair Tier 1 and Tier 3 together, completely destroying the broad-to-specific information hierarchy.",
+                "Variation 2: Buttons (Button Overload) — Using pill buttons for Layer 3 to match Layer 2. This results in two dense, stacked rows of button containers, causing immediate visual clutter and severe cognitive fatigue in a 1/5 column.",
+                "Variation 3: Vertical Icons (Spatial Decoupling) — Decoupling Layer 3 into a contextual vertical icon strip on the left side of the content container. This resolves top-bar collision, but slightly encroaches on the content workspace width.",
+                "Variation 4: Apple Morph (Apple-Grade Fluid Morphing · Selected) — A single adaptive control with cubic-bezier(0.32, 0.72, 0, 1) easing. When tapping Discover, Layer 2 smoothly compresses its text into minimal 'S' and 'C' badges while expanding the sub-navigation pills horizontally on-demand."
               ]
             },
             {
-              heading: "3. The Spatial Decoupling Decision",
-              content: "To avoid both visual jumps and button fatigue, we decoupled the layout directions:",
+              heading: "3. Spatial Decoupling & Fluid Morphing Decision",
+              content: "The final design marries Gestalt hierarchy with adaptive micro-interactions:",
               bullets: [
-                "Layers 1 and 2 stay horizontal at the top — Layer 1 uses clean text headers (no background boxes), and Layer 2 uses clear pill button containers.",
-                "Layer 3 shifts to a contextual vertical layout on the left — It only slides open when the user actively enters the Discover/Clubs section.",
-                "Result — Keeps the main workspace clean, prevents accidental clicks, and provides an effortless mental model for students."
+                "Hierarchical Contrast — Large borderless typography for Tier 1, high-contrast segmented pill containers for Tier 2, and contextual morphing sub-tabs for Tier 3.",
+                "Dynamic State Compression — Clicking Discover expands the 3rd tier while gracefully compressing Tier 1/2 text into compact indicators without losing navigation context.",
+                "Interactive Result — Eliminates cognitive overload, preserves maximum workspace area, and delivers a smooth native Apple-like interaction feel."
               ]
             }
           ]
@@ -384,27 +386,29 @@ const PORTFOLIO_DATA = {
           id: "three-layer-layout",
           badgeText: "Three Layer Layout 交互设计探究",
           title: "1/5 狭窄屏幕下的三级菜单布局解法",
-          subtitle: "在 1/5 屏幕宽度内避免三层横向堆叠，解决 A-B-A 视觉跳跃与认知负荷，从横向中解耦出按需展开的纵向层级。",
+          subtitle: "在 1/5 屏幕宽度内避免三层横向堆叠，推演 4 种导航形态，解决 A-B-A 视觉跳跃与认知负荷，实现苹果级流体变形动效。",
           sections: [
             {
               heading: "1. 1/5 屏宽下的排版难题",
-              content: "在左侧占据屏幕仅约 1/5 宽度的受限面板中，界面面临三级嵌套菜单的排版挑战。如果把三层菜单全部横向堆叠，在狭窄空间内极度破坏用户体验。平时用户大多只看到两层：顶部一级（新闻 News、工具 Tools、社交 Social，文字形态），二级（校园新闻 School News、社团新闻 Club News、探索/社团 Discover/Clubs，按钮形态）。但当用户点击 Discover/Clubs 时，系统必须呈现已加入社团、待发现社团及近期活动，这便在仅 1/5 宽度的区域催生出了第三级菜单。"
+              content: "在左侧占据屏幕仅约 1/5 宽度的受限面板中，界面面临三级嵌套菜单的排版挑战。如果把三层菜单全部横向堆叠，在狭窄空间内极度破坏用户体验。平时用户大多只看到两层：顶部一级（新闻 News、工具 Tools、社交 Social，文字形态），二级（校园新闻 School News、社团新闻 Club News、探索 Discover，按钮形态）。但当用户点击 Discover 时，系统必须呈现已加入社团、待发现社团及近期活动，这便在仅 1/5 宽度的区域催生出了第三级菜单。"
             },
             {
-              heading: "2. 常规方案为何走不通",
-              content: "行业常有多级菜单规则（如'一级在顶则二三级在左'），但三层全部做成横向是反用户体验的。在尝试三级形态时，我们深入推演了两种常规方案的硬伤：",
+              heading: "2. 四种导航形态推演与对比",
+              content: "针对这一高密度排版难题，我们推演并实现了 4 种不同的布局形态原型进行对比验证：",
               bullets: [
-                "三级用纯文字（引发 A-B-A 视觉跳跃）—— 如果三级也用文字，会导致一级与三级在形态上完全重合（文字-按钮-文字）。根据格式塔心理学，人脑本能会将相似形态归为同类，这直接打破了从大到小的认知层级。相差两级的元素在视觉上表现相同，属于信息架构的大忌。",
-                "三级用按钮（引发认知负荷过载）—— 如果让三级也用按钮以保持逻辑统一，会导致狭窄区域内连续堆砌两层密密麻麻的按钮容器。无论如何微调细节，高密度的按钮堆积都会给日常使用带来沉重的认知负荷。"
+                "形态一（Variation 1: Text Link 文字下划线方案）—— 导致 A-B-A 视觉跳跃。如果三级也用文字，会导致一级与三级在形态上完全重合（文字-按钮-文字）。根据格式塔心理学，人脑本能会将相似形态归为同类，直接打破了从大到小的认知层级。",
+                "形态二（Variation 2: Buttons 双层胶囊按键方案）—— 导致认知负荷过载。如果让三级也用按钮以保持逻辑统一，狭窄区域内连续堆砌两层密密麻麻的按钮容器，视觉极其拥挤，产生严重的操作疲劳。",
+                "形态三（Variation 3: Vertical Icons 侧边竖向图标方案）—— 空间维度解耦。将第三级从顶部横向体系中分离，做成内容区左侧的纵向图标栏。避开了顶部横向冲突，但略微侵占了内容区的水平有效宽度。",
+                "形态四（Variation 4: Apple Morph 苹果级流体变形方案 · 最终选定）—— 引入苹果贝塞尔曲线（cubic-bezier(0.32, 0.72, 0, 1)）。默认态保持简洁双胶囊；点击指南针探索时，一级胶囊自适应文字折叠为 S 与 C 缩写，右侧平滑伸展出三级子菜单，实现了极致的交互优雅与空间利用率。"
               ]
             },
             {
-              heading: "3. 空间解耦与按需展开决策",
-              content: "为了同时避开视觉跳跃与按钮过载两大问题，我们将交互维度进行了空间解耦：",
+              heading: "3. 空间解耦与流体动效决策",
+              content: "最终方案在格式塔层级与微交互之间找到了最佳平衡点：",
               bullets: [
-                "一二级常驻顶部横向 —— 一二级作为高频入口保留在顶部，大字无背景 vs 独立胶囊按钮清晰区分主次权重。",
-                "三级解耦为左侧纵向 —— 将第三级从横向体系中分离，做成左侧纵向形态，仅在点击 Discover/Clubs 时按需展开。",
-                "交互收益 —— 物理空间与视觉形态的双重解耦，既杜绝了横向三行堆叠的拥挤感，又让操作直观自然。"
+                "一二级常驻顶部横向 —— 一级大字无背景 vs 二级独立胶囊按钮清晰区分主次权重。",
+                "动态状态压缩与无缝还原 —— 点击探索时自适应折叠文字而非生硬隐藏，保留层级上下文感知，随时可一键还原。",
+                "交互收益 —— 彻底杜绝了横向三行堆叠的拥挤感，给中学生用户带来丝滑自然的类原生交互体验。"
               ]
             }
           ]
