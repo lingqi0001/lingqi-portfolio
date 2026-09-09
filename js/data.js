@@ -1,8 +1,9 @@
 const PORTFOLIO_DATA = {
   en: {
     profile: {
-      name: "Application Hub",
-      targetMajor: "Human-Computer Interaction (HCI)",
+      name: "Lingqi Mo",
+      school: "Centennial High School, MD",
+      targetMajor: "Computer Engineering / Electrical Engineering",
       focus: "Tech-focused with UI/UX Integration",
       gpa: {
         unweighted: 3.76,
@@ -168,6 +169,22 @@ const PORTFOLIO_DATA = {
         link: "https://chschat.xyz"
       },
       {
+        id: "honor-roll-cipriano",
+        title: "Honor Roll Project Created For Ms. Cipriano",
+        category: ["leadership", "tech", "ux"],
+        tags: ["Campus Tool", "Productivity", "Auto-Fit Layout", "Print to Poster"],
+        description: "Built a handy web tool for Centennial High School's teachers' secretary (Ms. Cipriano) to streamline the monthly Honor Roll roster. Instead of spending hours manually formatting and arranging hundreds of student names, the teacher simply copies and pastes names straight from Excel into the tool; it automatically auto-fits and divides them evenly into rows and columns across poster pages, ready to print and display directly on campus walls.",
+        highlights: [],
+        testimonial: {
+          badge: "Teacher Endorsement",
+          author: "Ms. Cipriano",
+          role: "Teachers' Secretary at Centennial High School",
+          quote: "The Honor Roll Student tool that Moss created for me is easy to use and saves me hours of work every month.  I simply paste any number of names into the tool, and it will divide them evenly into rows and columns so I can print and display on our school walls.  I was truly impressed with his time spent understanding my requirements and ensuring the output was just as I needed."
+        },
+        link: "https://chschat.xyz/honorroll.html",
+        linkText: "Launch Tool (chschat.xyz)"
+      },
+      {
         id: "tedx-organizer",
         title: "TEDx Youth Event Organizer",
         category: ["leadership"],
@@ -225,9 +242,8 @@ const PORTFOLIO_DATA = {
       ]
     },
     toefl: [
-      { date: "Current Best (Dec 2025)", r: 24, l: 28, s: 26, w: 24, total: 102 }
+      { date: "Current Best (Dec 2025)", r: 24, l: 26, s: 26, w: 24, total: 100 }
     ],
-    toeflNote: "* Note: The Listening 28 score was taken under the NEEC testing system, which is separate from ets.org TOEFL records; the MyBest score on ETS is officially recorded as 100.",
     volunteering: [
       { name: "Bio-Island & Xiaozhou Village: Environmental Protection Publicity", hours: 7 },
       { name: "Memorial Museum of the 3rd National Congress of the CPC: Volunteer Service", hours: 4 },
@@ -250,8 +266,8 @@ const PORTFOLIO_DATA = {
   zh: {
     profile: {
       name: "申请中心",
-      targetMajor: "人机交互 (HCI)",
-      focus: "偏技术同时融合 UI/UX",
+      targetMajor: "计算机工程 / 电子电气工程 (CE / EE)",
+      focus: "计算机工程与智能物理系统",
       gpa: {
         unweighted: 3.76,
         weighted: 3.93,
@@ -416,6 +432,23 @@ const PORTFOLIO_DATA = {
         link: "https://chschat.xyz"
       },
       {
+        id: "honor-roll-cipriano",
+        title: "Honor Roll Project Created For Ms. Cipriano",
+        category: ["leadership", "tech", "ux"],
+        tags: ["校园实用小工具", "办公提效", "一键排版", "海报打印"],
+        description: "为 Centennial High School 的教师秘书（Ms. Cipriano）专门制作的校园光荣榜排版小工具。每月发布荣誉学生名单时，老师不再需要花费数小时在海报上手动排版数百个名字，只需直接从 Excel 复制并粘贴名单，工具就会自动计算最佳行列并自适应字号（Auto-Fit），一键生成可直接打印并张贴在学校墙面上的海报。",
+        highlights: [],
+        testimonial: {
+          badge: "教师评价与推荐",
+          author: "Ms. Cipriano",
+          role: "Teachers' Secretary at Centennial High School",
+          quote: "The Honor Roll Student tool that Moss created for me is easy to use and saves me hours of work every month.  I simply paste any number of names into the tool, and it will divide them evenly into rows and columns so I can print and display on our school walls.  I was truly impressed with his time spent understanding my requirements and ensuring the output was just as I needed.",
+          quoteZh: "“Moss 为我制作的 Honor Roll 学生名单排版工具非常易用，每个月都帮我省下了数小时的工作量。我只需把名单粘贴进工具，它就会自动将名字均匀划分为行和列，方便我打印并张贴在学校墙面上。他花时间深入理解我的需求并确保最终输出完全符合我的预期，这真的让我印象极其深刻。”"
+        },
+        link: "https://chschat.xyz/honorroll.html",
+        linkText: "在线体验 (chschat.xyz)"
+      },
+      {
         id: "tedx-organizer",
         title: "TEDx 活动主办与筹办",
         category: ["leadership"],
@@ -473,9 +506,8 @@ const PORTFOLIO_DATA = {
       ]
     },
     toefl: [
-      { date: "当前最佳 (2025年12月)", r: 24, l: 28, s: 26, w: 24, total: 102 }
+      { date: "当前最佳 (2025年12月)", r: 24, l: 26, s: 26, w: 24, total: 100 }
     ],
-    toeflNote: "* 注：听力 28 分为 NEEC 体系下的考试成绩，因成绩与 ets.org 托福系统不互通，ETS 官方记录的 MyBest Score 为 100 分。",
     volunteering: [
       { name: "生物岛小洲村: 环保宣传", hours: 7 },
       { name: "中共三大会议旧址纪念馆: 志愿者服务", hours: 4 },

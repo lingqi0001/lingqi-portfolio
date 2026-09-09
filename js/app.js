@@ -70,11 +70,11 @@ const UI_TRANSLATIONS = {
     "proj.other": "Other Events",
     "time.volunteerLog": "100h Volunteering Log",
     "time.milestones": "Milestone Checklist",
-    "dash.toeflNote": "* Note: The Listening 28 score was taken under the NEEC system, which is separate from ets.org TOEFL records; the MyBest score on ETS is officially recorded as 100.",
     "dash.volunteerOrgs": "Organizations",
     "dash.galleryTitle": "Design Gallery",
     "dash.galleryInstruction": "Hold and spin",
     "dash.galleryExpand": "Expand",
+    "dash.counselorHint": "Information For Counselor/Teacher",
     "proj.viewProject": "View Details"
   },
   zh: {
@@ -136,11 +136,11 @@ const UI_TRANSLATIONS = {
     "proj.other": "其他活动",
     "time.volunteerLog": "100小时志愿服务日志",
     "time.milestones": "规划执行里程碑清单",
-    "dash.toeflNote": "* 注：听力28分属于NEEC体系下的考试，成绩与ets.org托福系统不互通，因此ETS官方记录的MyBest Score为100分。",
     "dash.volunteerOrgs": "机构",
     "dash.galleryTitle": "设计画廊",
     "dash.galleryInstruction": "按住光晕旋转",
     "dash.galleryExpand": "全屏预览",
+    "dash.counselorHint": "升学顾问与任课老师入口",
     "proj.viewProject": "查看详情"
   }
 };
@@ -169,7 +169,9 @@ function initAll() {
     { name: 'EmailPill', fn: initEmailPill },
     { name: 'ThemeToggle', fn: initThemeToggle },
     { name: 'ImageLightbox', fn: initImageLightbox },
-    { name: 'CaseStudyModal', fn: initCaseStudyModal }
+    { name: 'CaseStudyModal', fn: initCaseStudyModal },
+    { name: 'AuthModal', fn: initAuthModal },
+    { name: 'CounselorHint', fn: initCounselorHint }
   ];
 
   initializers.forEach(item => {
@@ -516,6 +518,7 @@ function initProjects() {
       const sortOrder = [
         'epaper-assistant',
         'chschat-xyz',
+        'honor-roll-cipriano',
         'script-killing-intern',
         'xia-zao-film',
         'usaco',
@@ -653,6 +656,50 @@ function initProjects() {
           </div>
         ` : '';
 
+        let testimonialHtml = '';
+        if (p.testimonial) {
+          const t = p.testimonial;
+          const badgeText = t.badge || (currentLang === 'zh' ? '教师评价与推荐' : 'Teacher Endorsement');
+          const authorText = t.author || 'Ms. Cipriano';
+          const roleText = t.role || "Teachers' Secretary at Centennial High School";
+          const zhTranslationHtml = (currentLang === 'zh' && t.quoteZh) ? `
+            <div class="project-testimonial-quote-zh" style="
+              font-size: 0.86rem;
+              line-height: 1.6;
+              color: var(--text-secondary);
+              margin-top: 10px;
+              padding-top: 8px;
+              border-top: 1px dashed rgba(186, 166, 149, 0.35);
+              font-family: var(--font-body);
+            ">${t.quoteZh}</div>
+          ` : '';
+
+          testimonialHtml = `
+            <div class="project-testimonial">
+              <div class="testimonial-header">
+                <span class="testimonial-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  ${badgeText}
+                </span>
+                <svg class="testimonial-quote-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                </svg>
+              </div>
+              <div class="project-testimonial-quote">
+                “${t.quote}”
+              </div>
+              ${zhTranslationHtml}
+              <div class="testimonial-footer">
+                <div class="testimonial-author-row">
+                  <div class="testimonial-avatar">C</div>
+                  <div class="testimonial-author-name">${authorText}</div>
+                </div>
+                <div class="testimonial-author-role">${roleText}</div>
+              </div>
+            </div>
+          `;
+        }
+
         const highlightsHtml = (p.highlights && p.highlights.length > 0) ? `
             <ul class="project-highlights">
               ${p.highlights.map(h => `<li>${h}</li>`).join('')}
@@ -686,6 +733,7 @@ function initProjects() {
             <div class="project-tags">
               ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
             </div>
+            ${testimonialHtml}
             ${highlightsHtml}
             ${caseStudyHtml}
             ${actionBtn}
@@ -1993,6 +2041,187 @@ document.addEventListener('click', (e) => {
     openCaseStudyModal(projId || 'chschat-xyz');
   }
 });
+
+// ==========================================
+// Restricted Portal Verification Modal (AuthModal)
+// ==========================================
+function initAuthModal() {
+  if (document.getElementById('authPortalModal')) return;
+
+  const isZh = currentLang === 'zh';
+  const modal = document.createElement('div');
+  modal.id = 'authPortalModal';
+  modal.className = 'auth-modal-overlay';
+  modal.innerHTML = `
+    <div class="auth-modal-card">
+      <div class="auth-modal-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div class="auth-modal-title">${isZh ? '受限访问通道' : 'Faculty & Counselor Portal'}</div>
+      <div class="auth-modal-desc">${isZh ? '此界面仅限特定访问，请输入您的 Last Name（姓氏）以查看专属申请进度与材料信息。' : 'This section is restricted to authorized faculty and recommenders. Please enter your last name to proceed.'}</div>
+      <div class="auth-input-group">
+        <input type="text" id="authPortalInput" class="auth-modal-input" placeholder="${isZh ? '请输入您的姓氏...' : 'Enter your last name...'}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <div id="authPortalError" class="auth-error-msg">${isZh ? '姓名未在授权列表中，请重试' : 'Access Denied: Last name not authorized'}</div>
+      </div>
+      <div class="auth-modal-actions">
+        <button type="button" id="authPortalCancel" class="auth-btn-cancel">${isZh ? '取消' : 'Cancel'}</button>
+        <button type="button" id="authPortalSubmit" class="auth-btn-submit">${isZh ? '验证并进入' : 'Verify & Enter'}</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const input = modal.querySelector('#authPortalInput');
+  const errorMsg = modal.querySelector('#authPortalError');
+  const submitBtn = modal.querySelector('#authPortalSubmit');
+  const cancelBtn = modal.querySelector('#authPortalCancel');
+
+  function closeAuthModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    if (input) input.value = '';
+    if (errorMsg) errorMsg.classList.remove('visible');
+    if (input) input.classList.remove('auth-input-shake');
+  }
+
+  function handleVerification() {
+    if (!input) return;
+    const val = input.value.trim().toLowerCase();
+    const authorized = ['boring', 'sanders', 'admin', 'moss', 'teacher'];
+
+    if (authorized.includes(val)) {
+      if (errorMsg) errorMsg.classList.remove('visible');
+      submitBtn.textContent = isZh ? '验证成功...' : 'Verified...';
+      submitBtn.style.background = '#10b981';
+      
+      const currentPath = window.location.pathname;
+      const isLocalFile = window.location.protocol === 'file:';
+      let targetUrl = 'info.html';
+
+      if (currentPath.includes('/cn/')) {
+        targetUrl = isLocalFile ? 'info.html' : '/cn/info.html';
+      } else if (currentPath.includes('/en/')) {
+        targetUrl = isLocalFile ? 'info.html' : '/en/info.html';
+      } else {
+        targetUrl = isLocalFile ? 'info.html' : '/info.html';
+      }
+
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 400);
+    } else {
+      if (errorMsg) {
+        errorMsg.textContent = val.length === 0 ? (isZh ? '请输入您的姓氏' : 'Please enter your last name') : (isZh ? '姓名未在授权列表中，请重试' : 'Access Denied: Last name not authorized');
+        errorMsg.classList.add('visible');
+      }
+      input.classList.remove('auth-input-shake');
+      void input.offsetWidth; // Force CSS reflow
+      input.classList.add('auth-input-shake');
+      input.focus();
+    }
+  }
+
+  submitBtn.addEventListener('click', handleVerification);
+  cancelBtn.addEventListener('click', closeAuthModal);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeAuthModal();
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleVerification();
+    } else if (e.key === 'Escape') {
+      closeAuthModal();
+    }
+  });
+
+  // Attach click trigger to LM profile avatar (direct access)
+  document.querySelectorAll('.profile-avatar').forEach(avatar => {
+    avatar.setAttribute('title', isZh ? '教师与推荐人通道 (Information For Counselor/Teacher)' : 'Information For Counselor/Teacher');
+    avatar.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const currentPath = window.location.pathname;
+      const isLocalFile = window.location.protocol === 'file:';
+      let targetUrl = 'info.html';
+      if (currentPath.includes('/cn/')) {
+        targetUrl = isLocalFile ? 'info.html' : '/cn/info.html';
+      } else if (currentPath.includes('/en/')) {
+        targetUrl = isLocalFile ? 'info.html' : '/en/info.html';
+      } else {
+        targetUrl = isLocalFile ? 'info.html' : '/info.html';
+      }
+      window.location.href = targetUrl;
+    });
+  });
+}
+
+function openAuthModal() {
+  const modal = document.getElementById('authPortalModal');
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    const input = document.getElementById('authPortalInput');
+    if (input) {
+      setTimeout(() => input.focus(), 120);
+    }
+  }
+}
+
+window.openAuthModal = openAuthModal;
+
+// ==========================================
+// First-Visit Dynamic Hint for Counselor Portal (Desktop Only)
+// ==========================================
+function initCounselorHint() {
+  const hint = document.getElementById('counselorHint');
+  if (!hint) return;
+
+  // Only display on desktop (> 768px), not on mobile devices
+  if (window.innerWidth <= 768) {
+    return;
+  }
+
+  // 1. Check if user already dismissed it
+  try {
+    const isDismissed = localStorage.getItem('counselor_hint_closed_by_user');
+    if (isDismissed === 'true') {
+      hint.remove();
+      return;
+    }
+  } catch (e) {}
+
+  // 2. Only show after confirming no key exists
+  hint.classList.add('visible');
+
+  function dismissHint(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    hint.classList.remove('visible');
+    hint.classList.add('hiding');
+    setTimeout(() => {
+      try { hint.remove(); } catch (err) {}
+    }, 260);
+    try {
+      localStorage.setItem('counselor_hint_closed_by_user', 'true');
+    } catch (err) {}
+  }
+
+  const closeBtn = document.getElementById('dismissCounselorHint');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', dismissHint);
+  }
+}
+
+window.initCounselorHint = initCounselorHint;
+
 
 
 

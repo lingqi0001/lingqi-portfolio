@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="College Application & Recommendation Letter Tracking Matrix - Lingqi Mo">
+  <title>Application & Recommendation Tracker | Lingqi Mo</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Theme Init Script -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      }
+    })();
+  </script>
+  
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="css/styles.css?v=3">
+  
+  <style>
+    /* Remove hover animations on cards, table rows, and buttons (except theme-toggle) */
+    .summary-card,
+    .table-container,
+    .custom-table tr,
+    .custom-table td,
+    .back-nav-btn {
+      transition: none !important;
+      transform: none !important;
+    }
+
+    .summary-card:hover {
+      transform: none !important;
+      border-color: var(--glass-border) !important;
+    }
+
+    .custom-table tr:hover td {
+      background: transparent !important;
+    }
+
+    .back-nav-btn:hover {
+      transform: none !important;
+      background: rgba(125, 125, 125, 0.08) !important;
+      border-color: var(--glass-border) !important;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--glass-shadow);
+    }
+
+    .summary-card .label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .summary-card .value {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .summary-card .subtext {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      opacity: 0.85;
+    }
+
+    .target-major-val {
+      font-size: 1.05rem !important;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .target-action-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .target-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: rgba(186, 166, 149, 0.18);
+      border: 1px solid rgba(186, 166, 149, 0.35);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .target-btn:hover {
+      background: rgba(186, 166, 149, 0.35);
+      border-color: rgba(186, 166, 149, 0.6);
+      transform: translateY(-1px);
+    }
+
+    /* Target Modal Styles (100% 墨水屏规范 / 二级窗口通用模板) */
+    .target-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .target-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .target-modal-container {
+      background: rgba(246, 238, 230, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      width: 95%;
+      max-width: 1100px;
+      height: 80vh;
+      max-height: 90vh;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+      transform: scale(0.95) translateY(10px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .target-modal-container {
+      background: rgba(30, 26, 23, 0.7);
+      border-color: rgba(222, 203, 183, 0.15);
+    }
+
+    .target-modal-overlay.active .target-modal-container {
+      transform: scale(1) translateY(0);
+    }
+
+    .target-modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(128, 128, 128, 0.03);
+      flex-shrink: 0;
+    }
+
+    .target-modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .target-modal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-color, #332b25);
+      letter-spacing: -0.02em;
+    }
+
+    [data-theme="dark"] .target-modal-title {
+      color: #f5ece3;
+    }
+
+    .target-modal-tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(186, 166, 149, 0.12);
+      padding: 4px;
+      border-radius: 999px;
+    }
+
+    [data-theme="dark"] .target-modal-tabs {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .target-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-light, #857467);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] .target-tab-btn {
+      color: var(--text-light, #beb0a2);
+    }
+
+    .target-tab-btn:hover {
+      color: var(--text-color, #332b25);
+    }
+
+    [data-theme="dark"] .target-tab-btn:hover {
+      color: #f5ece3;
+    }
+
+    .target-tab-btn.active {
+      background: var(--action-primary, #a37f65);
+      color: #ffffff !important;
+      border-color: rgba(163, 127, 101, 0.6);
+      box-shadow: 0 4px 14px -2px rgba(163, 127, 101, 0.4);
+    }
+
+    .target-modal-close {
+      background: rgba(0, 0, 0, 0.08);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      line-height: 1;
+      color: var(--text-color, #332b25);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .target-modal-close:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    [data-theme="dark"] .target-modal-close {
+      background: rgba(255, 255, 255, 0.15);
+      color: #f5ece3;
+    }
+
+    [data-theme="dark"] .target-modal-close:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .target-modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* 100% 墨水屏规范 Protocol Table */
+    .protocol-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      color: var(--text-color, #332b25);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+    }
+
+    [data-theme="dark"] .protocol-table {
+      color: #f5ece3;
+      border-color: rgba(222, 203, 183, 0.15);
+    }
+
+    .protocol-table th,
+    .protocol-table td {
+      border: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+      padding: 14px 18px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    [data-theme="dark"] .protocol-table th,
+    [data-theme="dark"] .protocol-table td {
+      border-color: rgba(222, 203, 183, 0.15);
+    }
+
+    .protocol-table th {
+      background-color: rgba(128, 128, 128, 0.08);
+      font-weight: 700;
+      color: var(--text-color, #332b25);
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    [data-theme="dark"] .protocol-table th {
+      color: #f5ece3;
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    .protocol-table tr:nth-child(even) td {
+      background-color: rgba(128, 128, 128, 0.02);
+    }
+
+    [data-theme="dark"] .protocol-table tr:nth-child(even) td {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .protocol-table code {
+      font-family: Consolas, Monaco, monospace;
+      background: rgba(128, 128, 128, 0.1);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #8c5333;
+    }
+
+    [data-theme="dark"] .protocol-table code {
+      color: #e3bba2;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* 100% 墨水屏原版 Custom Webkit Scrollbars (无三角箭头按键) */
+    .target-modal-container::-webkit-scrollbar,
+    .target-modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .target-modal-container::-webkit-scrollbar-button,
+    .target-modal-body::-webkit-scrollbar-button {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .target-modal-container::-webkit-scrollbar-track,
+    .target-modal-body::-webkit-scrollbar-track {
+      background: rgba(100, 85, 75, 0.05);
+      border-radius: 4px;
+    }
+
+    .target-modal-container::-webkit-scrollbar-thumb,
+    .target-modal-body::-webkit-scrollbar-thumb {
+      background: rgba(186, 166, 149, 0.4);
+      border-radius: 4px;
+    }
+
+    .target-modal-container::-webkit-scrollbar-thumb:hover,
+    .target-modal-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(163, 127, 101, 0.6);
+    }
+
+    [data-theme="dark"] .target-modal-container::-webkit-scrollbar-track,
+    [data-theme="dark"] .target-modal-body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    [data-theme="dark"] .target-modal-container::-webkit-scrollbar-thumb,
+    [data-theme="dark"] .target-modal-body::-webkit-scrollbar-thumb {
+      background: rgba(222, 203, 183, 0.25);
+    }
+
+    [data-theme="dark"] .target-modal-container::-webkit-scrollbar-thumb:hover,
+    [data-theme="dark"] .target-modal-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(222, 203, 183, 0.45);
+    }
+
+    .target-modal-pane {
+      display: none;
+    }
+
+    .target-modal-pane.active {
+      display: block;
+      animation: targetPaneFadeIn 0.25s ease;
+    }
+
+    @keyframes targetPaneFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Target Essay Content Styling */
+    .target-essay-body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 10px 12px 30px;
+      color: var(--text-color, #332b25);
+      line-height: 1.82;
+      font-size: 1.02rem;
+    }
+
+    [data-theme="dark"] .target-essay-body {
+      color: #f5ece3;
+    }
+
+    .target-essay-body p {
+      margin-bottom: 20px;
+      letter-spacing: 0.01em;
+    }
+
+    .target-essay-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .target-essay-body strong {
+      color: var(--text-color, #332b25);
+      font-weight: 700;
+    }
+
+    [data-theme="dark"] .target-essay-body strong {
+      color: #ffffff;
+    }
+
+    .target-essay-lead {
+      font-size: 1.12rem;
+      font-weight: 600;
+      line-height: 1.75;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+      margin-bottom: 24px !important;
+      color: var(--text-color, #332b25);
+    }
+
+    [data-theme="dark"] .target-essay-lead {
+      color: #ffffff;
+    }
+
+    .target-essay-quote {
+      margin: 24px 0;
+      padding: 16px 22px;
+      border-left: 4px solid var(--action-primary, #a37f65);
+      background: rgba(186, 166, 149, 0.12);
+      border-radius: 0 12px 12px 0;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--text-color, #332b25);
+    }
+
+    [data-theme="dark"] .target-essay-quote {
+      background: rgba(255, 255, 255, 0.05);
+      color: #f5ece3;
+    }
+
+    .table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--card-border-radius);
+      padding: 24px;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+
+    .table-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.94rem;
+      text-align: left;
+    }
+
+    .custom-table th {
+      padding: 14px 18px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(125, 125, 125, 0.03);
+    }
+
+    .custom-table th:first-child { border-top-left-radius: 12px; }
+    .custom-table th:last-child { border-top-right-radius: 12px; }
+
+    .custom-table td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .custom-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .dl-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .dl-badge.oct15 {
+      background: rgba(239, 68, 68, 0.14);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .dl-badge.nov1 {
+      background: rgba(249, 115, 22, 0.12);
+      color: #f97316;
+      border: 1px solid rgba(249, 115, 22, 0.25);
+    }
+
+    .dl-badge.nov15 {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .dl-badge.nov30 {
+      background: rgba(59, 130, 246, 0.12);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    .dl-badge.dec1 {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .dl-badge.nov5 {
+      background: rgba(234, 88, 12, 0.12);
+      color: #ea580c;
+      border: 1px solid rgba(234, 88, 12, 0.25);
+    }
+
+    .dl-badge.rolling {
+      background: rgba(139, 92, 246, 0.12);
+      color: #8b5cf6;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .type-pill {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: rgba(125, 125, 125, 0.08);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .school-name {
+      font-weight: 600;
+      font-size: 0.98rem;
+      color: var(--text-primary);
+    }
+
+    .rl-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .rl-tag.needed {
+      background: rgba(191, 162, 140, 0.18);
+      color: var(--text-primary);
+      border: 1px solid rgba(191, 162, 140, 0.4);
+    }
+
+    .rl-tag.none {
+      background: rgba(125, 125, 125, 0.07);
+      color: var(--text-secondary);
+    }
+
+    .back-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(125, 125, 125, 0.08);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+
+    .counselor-callout {
+      margin-top: 24px;
+      padding: 16px 20px;
+      border-radius: 14px;
+      background: rgba(191, 162, 140, 0.1);
+      border-left: 4px solid #bfa28c;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .table-container { padding: 14px 10px; }
+      .custom-table th, .custom-table td { padding: 10px 8px; font-size: 0.82rem; }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .email-pill { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Pill Header -->
+  <header class="container">
+    <div class="header-wrapper">
+      <!-- Left side: Back to Portfolio button -->
+      <div class="header-left">
+        <a href="index.html" class="back-nav-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Lingqi Mo's Portfolio
+        </a>
+      </div>
+      
+      <!-- Right side: Lang Switch, Theme Toggle, Email Pill -->
+      <div class="header-actions" style="margin-left: auto;">
+        <div class="lang-switch">
+          <span class="lang-btn active" onclick="window.location.href='info.html'">EN</span>
+          <span class="lang-btn" onclick="window.location.href='cn/info.html'">中</span>
+        </div>
+        <button id="theme-toggle" class="action-btn-circle" title="Toggle Theme">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/>
+            <path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+        <div class="email-pill">
+          <span class="email-text">moss104088@gmail.com</span>
+          <button class="action-btn-circle" title="Contact Email" onclick="navigator.clipboard.writeText('moss104088@gmail.com')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content" style="padding-top: 108px;">
+    
+    <!-- Summary Key Metrics -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <span class="label">Applicant</span>
+        <span class="value">Lingqi Mo</span>
+        <span class="subtext">Centennial High School, MD</span>
+      </div>
+      <div class="summary-card">
+        <span class="label">Primary Target</span>
+        <span class="value target-major-val">Computer Engineering / Electrical Engineering</span>
+        <div class="target-action-row">
+          <button type="button" class="target-btn" onclick="openTargetModal('why')">
+            <span>Why?</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </button>
+          <button type="button" class="target-btn" onclick="openTargetModal('goal')">
+            <span>Goal</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="summary-card">
+        <span class="label">Earliest Deadline</span>
+        <span class="value" style="color: #ef4444;">Oct 15, 2026</span>
+        <span class="subtext">Early Action (UNC)</span>
+      </div>
+      <div class="summary-card">
+        <span class="label">Total Tracked</span>
+        <span class="value">20 Universities</span>
+        <span class="subtext">EA / Priority / CSU / Rolling</span>
+      </div>
+    </div>
+
+    <!-- Main Table Container -->
+    <div class="table-container">
+      <div class="table-header-bar">
+        <div class="table-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="M3 9h18"/>
+            <path d="M9 21V9"/>
+          </svg>
+          Application Deadlines & Recommendation Matrix
+        </div>
+      </div>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Deadline</th>
+            <th>Type</th>
+            <th>Schools</th>
+            <th>Letters of Recommendation (RLs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 10/15 UNC -->
+          <tr>
+            <td><span class="dl-badge oct15">10 / 15</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">University of North Carolina at Chapel Hill (UNC)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <!-- 11/01 Non-Restrictive EA -->
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">Penn State (PSU)</strong></td>
+            <td><span class="rl-tag none">0 + 0</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">University of Maryland (UMD)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">University of Illinois at Urbana-Champaign (UIUC)</strong></td>
+            <td><span class="rl-tag none">0 + 0</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">Indiana University Bloomington (IUB)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">Rochester Institute of Technology (RIT)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">North Carolina State University</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">Stony Brook University</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">University of Minnesota - Twin Cities</strong></td>
+            <td><span class="rl-tag none">0 + 0 + 0</span></td>
+          </tr>
+
+          <!-- 11/05 EA -->
+          <tr>
+            <td><span class="dl-badge nov5">11 / 05</span></td>
+            <td><span class="type-pill">Early Action</span></td>
+            <td><strong class="school-name">University of Massachusetts Amherst</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <!-- 11/15 Priority / EA -->
+          <tr>
+            <td><span class="dl-badge nov15">11 / 15</span></td>
+            <td><span class="type-pill">Regular / Priority</span></td>
+            <td><strong class="school-name">University of Washington (UW)</strong></td>
+            <td><span class="rl-tag none">0 + 0 + 0</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov15">11 / 15</span></td>
+            <td><span class="type-pill">Early Action</span></td>
+            <td><strong class="school-name">Virginia Tech (VT)</strong></td>
+            <td><span class="rl-tag none">0 + 0 + 0</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov15">11 / 15</span></td>
+            <td><span class="type-pill">Early Action</span></td>
+            <td><strong class="school-name">Illinois Institute of Technology</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <!-- 11/30 CSU Application -->
+          <tr>
+            <td><span class="dl-badge nov30">11 / 30</span></td>
+            <td><span class="type-pill">CSU Application</span></td>
+            <td><strong class="school-name">San José State University (SJSU)</strong></td>
+            <td><span class="rl-tag none">No RLs</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov30">11 / 30</span></td>
+            <td><span class="type-pill">CSU Application</span></td>
+            <td><strong class="school-name">Cal Poly Pomona</strong></td>
+            <td><span class="rl-tag none">No RLs</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov30">11 / 30</span></td>
+            <td><span class="type-pill">CSU Application</span></td>
+            <td><strong class="school-name">Cal Poly San Luis Obispo</strong></td>
+            <td><span class="rl-tag none">No RLs</span></td>
+          </tr>
+
+          <!-- 12/01 Priority Freshman -->
+          <tr>
+            <td><span class="dl-badge dec1">12 / 01</span></td>
+            <td><span class="type-pill">Priority Freshman</span></td>
+            <td><strong class="school-name">UT Dallas</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge dec1">12 / 01</span></td>
+            <td><span class="type-pill">Priority / EA</span></td>
+            <td><strong class="school-name">The University of Utah</strong></td>
+            <td><span class="rl-tag none">No RLs</span></td>
+          </tr>
+
+          <!-- Rolling Admission -->
+          <tr>
+            <td><span class="dl-badge rolling">Rolling</span></td>
+            <td><span class="type-pill">Rolling Admission</span></td>
+            <td><strong class="school-name">Arizona State University</strong></td>
+            <td><span class="rl-tag none">No RLs</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge rolling">Rolling</span></td>
+            <td><span class="type-pill">Rolling Admission</span></td>
+            <td><strong class="school-name">Iowa State University</strong></td>
+            <td><span class="rl-tag none">No RLs</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="counselor-callout">
+        <strong>📌 Note for Counselors & Teachers:</strong>
+        <p style="margin: 4px 0 0;">For institutions requiring <code>1+1+1</code>, this corresponds to 1 Counselor Recommendation + 1 Primary Academic Teacher Recommendation + 1 Additional/Optional Recommender. For schools marked <code>0+0</code>, <code>0+0+0</code>, or <code>No RLs</code>, letters of recommendation are not accepted or required.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Protocol / Case Study Modal Overlay (Target Detail Modal: Why & Goal) -->
+  <div class="target-modal-overlay" id="targetModal">
+    <div class="target-modal-container">
+      <div class="target-modal-header">
+        <div class="target-modal-header-left">
+          <span class="target-modal-title">Computer Engineering / Electrical Engineering (CE / EE)</span>
+          <div class="target-modal-tabs">
+            <button type="button" class="target-tab-btn active" id="tabWhyBtn" onclick="switchTargetTab('why')">
+              <span>Why CE / EE?</span>
+            </button>
+            <button type="button" class="target-tab-btn" id="tabGoalBtn" onclick="switchTargetTab('goal')">
+              <span>Future Goals</span>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="target-modal-close" onclick="closeTargetModal()" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="target-modal-body">
+        <!-- Pane: Why -->
+        <div id="paneWhy" class="target-modal-pane active">
+          <div class="target-essay-body">
+            <p>I did not start with hardware or electrical engineering. For most of high school, I saw myself much more clearly in User Experience, Human-Computer Interaction, and software development. I liked starting with a simple question: Why is this frustrating to use? Then I could watch how people behaved, rethink the interface or workflow, and build something that made the experience a little better.</p>
+            
+            <p><strong>CHSchat.xyz</strong> became one of the projects where that way of thinking developed the furthest.</p>
+            
+            <p>It began as a communication platform for students at Centennial High School, but over time, I stopped thinking of it as just a chat application. I wanted it to bring together parts of school life that normally existed across different websites, tools, and disconnected workflows. It grew to include school and club information, events, messaging, Eagle Time, a grade calculator, cafeteria information, peer tutoring, suggestions, lost and found, a student marketplace, and developer tools for future extensions.</p>
+            
+            <p>Even something as basic as signing in became a design constraint. It was not enough to build an authentication page that worked on my own computer; the system had to fit the Microsoft accounts students actually use through HCPSS.</p>
+            
+            <p>Working on CHSchat taught me something I had not really understood when I first became interested in UX:</p>
+            
+            <div class="target-essay-quote">
+              Making a better product and getting that product to work in the real world are very different problems.
+            </div>
+            
+            <p>On a screen, I could keep improving almost anything. I could redesign a page, change a workflow, add a feature, or even customize part of the platform around the needs of a particular teacher. But once I began thinking seriously about adoption beyond my own project, the problems changed.</p>
+            
+            <p>A school may already have years of data stored in an existing platform. A better interface does not make that data easy to move. Different schools depend on different account systems, devices, and technical infrastructure. At Centennial, Chromebooks and school accounts are already part of everyday academic life. But when I thought about how the same kind of product could work in schools in China, I realized that I could not simply assume that every student would have an individual Chromebook or another computer available whenever a lesson required one.</p>
+            
+            <p>At that point, the problem was no longer:</p>
+            <p style="padding-left: 16px; font-weight: 600; color: var(--text-color, #332b25);"><em>How can I design a better interface?</em></p>
+            
+            <p>It became:</p>
+            <p style="padding-left: 16px; font-weight: 600; color: var(--text-color, #332b25);"><em>What if the user does not have the right device for that interface in the first place?</em></p>
+            
+            <p>That question pushed me toward hardware.</p>
+            
+            <p>I began experimenting with inexpensive classroom response devices and e-ink communication tools. Instead of assuming that a school should first build an entire device ecosystem around my software, I became interested in doing the opposite: designing a simple physical device around one real need and making it inexpensive enough that deploying it could actually make sense.</p>
+            
+            <p>My current hardware prototypes still rely heavily on off-the-shelf microcontrollers, displays, and other modules. I can connect those pieces, write the software, and make a prototype function. But that experience has also made the limits of what I currently know much more visible.</p>
+            
+            <p>There is a large difference between assembling modules until a prototype works and designing a product that is compact, reliable, inexpensive, power-efficient, and realistic to manufacture. To cross that gap, I need to understand what is happening underneath the modules I am using: circuit design, PCB design, electronic components, embedded systems, power, communication, firmware, and the way hardware and software are designed together.</p>
+            
+            <p>That is why moving toward Computer Engineering or Electrical Engineering does not feel like leaving HCI behind.</p>
+            
+            <div class="target-essay-quote">
+              It feels more like following the same problem one layer deeper.
+            </div>
+            
+            <p>I started by asking how an interface could work better. CHSchat made me ask how an entire system could fit into a real institution. Hardware then made me ask what kind of device should exist underneath that system in the first place.</p>
+            
+            <p>Computer Engineering especially interests me because it sits directly at the boundary between software and hardware. Electrical Engineering interests me because it would give me a much deeper understanding of the circuits, electronics, and physical systems that I currently know mostly through finished modules.</p>
+            
+            <p>Both would give me the part of the product-development process that I am still missing.</p>
+          </div>
+        </div>
+
+        <!-- Pane: Goal -->
+        <div id="paneGoal" class="target-modal-pane">
+          <div class="target-essay-body">
+            <p>My goal is not to leave User Experience behind and become an engineer who only cares whether a circuit meets its specifications or whether a piece of code runs.</p>
+            
+            <p>I want to keep the way I already approach problems: start with the person, understand what is actually getting in the way, and then decide what technology should be built around that problem.</p>
+            
+            <p>CHSchat was important to me because it taught me how much can be improved by reorganizing a confusing digital experience around the people who actually use it. At the same time, it taught me that usability alone does not determine whether a product succeeds. Cost matters. Existing infrastructure matters. Device availability matters. Compatibility matters. Data migration matters. A teacher's willingness to change a workflow they have used for years matters.</p>
+            
+            <p>Sometimes the best solution may be better software.</p>
+            <p>Sometimes it may require a different device entirely.</p>
+            
+            <p>In college, I want to develop the engineering knowledge that would let me make that second choice seriously. I want to study circuits, PCB design, embedded systems, computer architecture, electronics, firmware, and hardware-software integration, rather than treating the physical side of my projects as a collection of finished components that I simply connect together.</p>
+            
+            <p>Long term, I want to be able to follow a problem much further than I can today.</p>
+            
+            <p>If a teacher needs a simpler way for an entire class to respond at once, I do not want my only answer to be another website. If a school does not have enough personal computing devices to support a piece of software, I do not want the project to end with, “Then they cannot use it.”</p>
+            
+            <p>I want to be able to keep designing.</p>
+            
+            <p>Maybe that means changing the communication method. Maybe it means reducing the number of components. Maybe it means designing a custom board, lowering the cost, changing the physical interaction, or building a device that removes the need for a general-purpose computer altogether.</p>
+            
+            <p>I am less interested in building technology that is impressive because it is complicated than in building technology that survives contact with the real world.</p>
+            
+            <p>A classroom device that a school can actually afford interests me. A tool that fits into a teacher's existing routine instead of forcing that teacher to rebuild everything around it interests me. A product that a student can pick up and understand almost immediately interests me.</p>
+            
+            <p>Ultimately, I want to bring together three parts of my background that I currently understand at very different depths: the human-centered thinking I developed through UX and HCI, the ability to turn ideas into working systems through software, and the deeper control over physical technology that I hope to gain through Computer Engineering and Electrical Engineering.</p>
+            
+            <p>I want to be able to start with:</p>
+            <p style="padding-left: 16px; font-weight: 700; color: var(--text-color, #332b25); font-size: 1.08rem;">“Why is this so difficult to use?”</p>
+            
+            <p>and keep working until I can ask:</p>
+            <p style="padding-left: 16px; font-weight: 700; color: var(--text-color, #332b25); font-size: 1.08rem;">“What would we have to redesign to make it work?”</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle support for info page
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+    }
+
+    // Target modal controllers
+    function openTargetModal(tab) {
+      const modal = document.getElementById('targetModal');
+      if (!modal) return;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      switchTargetTab(tab || 'why');
+    }
+
+    function closeTargetModal() {
+      const modal = document.getElementById('targetModal');
+      if (!modal) return;
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function switchTargetTab(tab) {
+      const paneWhy = document.getElementById('paneWhy');
+      const paneGoal = document.getElementById('paneGoal');
+      const tabWhyBtn = document.getElementById('tabWhyBtn');
+      const tabGoalBtn = document.getElementById('tabGoalBtn');
+
+      if (tab === 'goal') {
+        if (paneWhy) paneWhy.classList.remove('active');
+        if (paneGoal) paneGoal.classList.add('active');
+        if (tabWhyBtn) tabWhyBtn.classList.remove('active');
+        if (tabGoalBtn) tabGoalBtn.classList.add('active');
+      } else {
+        if (paneWhy) paneWhy.classList.add('active');
+        if (paneGoal) paneGoal.classList.remove('active');
+        if (tabWhyBtn) tabWhyBtn.classList.add('active');
+        if (tabGoalBtn) tabGoalBtn.classList.remove('active');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('targetModal');
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeTargetModal();
+        });
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeTargetModal();
+      });
+    });
+  </script>
+</body>
+</html>

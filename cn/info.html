@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="美本申请进度与推荐信要求看板 - 莫令琪 (Lingqi Mo)">
+  <title>大学申请与推荐信规划看板 | 莫令琪 (Lingqi Mo)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Theme Init Script -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      }
+    })();
+  </script>
+  
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="../css/styles.css?v=3">
+  
+  <style>
+    /* 移除除主题切换按钮外的全局hover位移动画 */
+    .summary-card,
+    .table-container,
+    .custom-table tr,
+    .custom-table td,
+    .back-nav-btn {
+      transition: none !important;
+      transform: none !important;
+    }
+
+    .summary-card:hover {
+      transform: none !important;
+      border-color: var(--glass-border) !important;
+    }
+
+    .custom-table tr:hover td {
+      background: transparent !important;
+    }
+
+    .back-nav-btn:hover {
+      transform: none !important;
+      background: rgba(125, 125, 125, 0.08) !important;
+      border-color: var(--glass-border) !important;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--glass-shadow);
+    }
+
+    .summary-card .label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .summary-card .value {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .summary-card .subtext {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      opacity: 0.85;
+    }
+
+    .target-major-val {
+      font-size: 1.05rem !important;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .target-action-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .target-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: rgba(186, 166, 149, 0.18);
+      border: 1px solid rgba(186, 166, 149, 0.35);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .target-btn:hover {
+      background: rgba(186, 166, 149, 0.35);
+      border-color: rgba(186, 166, 149, 0.6);
+      transform: translateY(-1px);
+    }
+
+    /* Target Modal Styles (100% 墨水屏规范 / 二级窗口通用模板) */
+    .target-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .target-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .target-modal-container {
+      background: rgba(246, 238, 230, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      width: 95%;
+      max-width: 1100px;
+      height: 80vh;
+      max-height: 90vh;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+      transform: scale(0.95) translateY(10px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .target-modal-container {
+      background: rgba(30, 26, 23, 0.7);
+      border-color: rgba(222, 203, 183, 0.15);
+    }
+
+    .target-modal-overlay.active .target-modal-container {
+      transform: scale(1) translateY(0);
+    }
+
+    .target-modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(128, 128, 128, 0.03);
+      flex-shrink: 0;
+    }
+
+    .target-modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .target-modal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-color, #332b25);
+      letter-spacing: -0.02em;
+    }
+
+    [data-theme="dark"] .target-modal-title {
+      color: #f5ece3;
+    }
+
+    .target-modal-tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(186, 166, 149, 0.12);
+      padding: 4px;
+      border-radius: 999px;
+    }
+
+    [data-theme="dark"] .target-modal-tabs {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .target-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-light, #857467);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] .target-tab-btn {
+      color: var(--text-light, #beb0a2);
+    }
+
+    .target-tab-btn:hover {
+      color: var(--text-color, #332b25);
+    }
+
+    [data-theme="dark"] .target-tab-btn:hover {
+      color: #f5ece3;
+    }
+
+    .target-tab-btn.active {
+      background: var(--action-primary, #a37f65);
+      color: #ffffff !important;
+      border-color: rgba(163, 127, 101, 0.6);
+      box-shadow: 0 4px 14px -2px rgba(163, 127, 101, 0.4);
+    }
+
+    .target-modal-close {
+      background: rgba(0, 0, 0, 0.08);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      line-height: 1;
+      color: var(--text-color, #332b25);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .target-modal-close:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    [data-theme="dark"] .target-modal-close {
+      background: rgba(255, 255, 255, 0.15);
+      color: #f5ece3;
+    }
+
+    [data-theme="dark"] .target-modal-close:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .target-modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* 100% 墨水屏规范 Protocol Table */
+    .protocol-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      color: var(--text-color, #332b25);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+    }
+
+    [data-theme="dark"] .protocol-table {
+      color: #f5ece3;
+      border-color: rgba(222, 203, 183, 0.15);
+    }
+
+    .protocol-table th,
+    .protocol-table td {
+      border: 1px solid var(--border-color, rgba(186, 166, 149, 0.35));
+      padding: 14px 18px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    [data-theme="dark"] .protocol-table th,
+    [data-theme="dark"] .protocol-table td {
+      border-color: rgba(222, 203, 183, 0.15);
+    }
+
+    .protocol-table th {
+      background-color: rgba(128, 128, 128, 0.08);
+      font-weight: 700;
+      color: var(--text-color, #332b25);
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    [data-theme="dark"] .protocol-table th {
+      color: #f5ece3;
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    .protocol-table tr:nth-child(even) td {
+      background-color: rgba(128, 128, 128, 0.02);
+    }
+
+    [data-theme="dark"] .protocol-table tr:nth-child(even) td {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .protocol-table code {
+      font-family: Consolas, Monaco, monospace;
+      background: rgba(128, 128, 128, 0.1);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #8c5333;
+    }
+
+    [data-theme="dark"] .protocol-table code {
+      color: #e3bba2;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* 100% 墨水屏原版 Custom Webkit Scrollbars (无三角箭头按键) */
+    .target-modal-container::-webkit-scrollbar,
+    .target-modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .target-modal-container::-webkit-scrollbar-button,
+    .target-modal-body::-webkit-scrollbar-button {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .target-modal-container::-webkit-scrollbar-track,
+    .target-modal-body::-webkit-scrollbar-track {
+      background: rgba(100, 85, 75, 0.05);
+      border-radius: 4px;
+    }
+
+    .target-modal-container::-webkit-scrollbar-thumb,
+    .target-modal-body::-webkit-scrollbar-thumb {
+      background: rgba(186, 166, 149, 0.4);
+      border-radius: 4px;
+    }
+
+    .target-modal-container::-webkit-scrollbar-thumb:hover,
+    .target-modal-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(163, 127, 101, 0.6);
+    }
+
+    [data-theme="dark"] .target-modal-container::-webkit-scrollbar-track,
+    [data-theme="dark"] .target-modal-body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    [data-theme="dark"] .target-modal-container::-webkit-scrollbar-thumb,
+    [data-theme="dark"] .target-modal-body::-webkit-scrollbar-thumb {
+      background: rgba(222, 203, 183, 0.25);
+    }
+
+    [data-theme="dark"] .target-modal-container::-webkit-scrollbar-thumb:hover,
+    [data-theme="dark"] .target-modal-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(222, 203, 183, 0.45);
+    }
+
+    .target-modal-pane {
+      display: none;
+    }
+
+    .target-modal-pane.active {
+      display: block;
+      animation: targetPaneFadeIn 0.25s ease;
+    }
+
+    @keyframes targetPaneFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Target Essay Content Styling */
+    .target-essay-body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 10px 12px 30px;
+      color: var(--text-color, #332b25);
+      line-height: 1.85;
+      font-size: 1.02rem;
+    }
+
+    [data-theme="dark"] .target-essay-body {
+      color: #f5ece3;
+    }
+
+    .target-essay-body p {
+      margin-bottom: 20px;
+      letter-spacing: 0.01em;
+    }
+
+    .target-essay-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .target-essay-body strong {
+      color: var(--text-color, #332b25);
+      font-weight: 700;
+    }
+
+    [data-theme="dark"] .target-essay-body strong {
+      color: #ffffff;
+    }
+
+    .target-essay-quote {
+      margin: 24px 0;
+      padding: 16px 22px;
+      border-left: 4px solid var(--action-primary, #a37f65);
+      background: rgba(186, 166, 149, 0.12);
+      border-radius: 0 12px 12px 0;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: var(--text-color, #332b25);
+    }
+
+    [data-theme="dark"] .target-essay-quote {
+      background: rgba(255, 255, 255, 0.05);
+      color: #f5ece3;
+    }
+
+    .table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--card-border-radius);
+      padding: 24px;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+
+    .table-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.94rem;
+      text-align: left;
+    }
+
+    .custom-table th {
+      padding: 14px 18px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(125, 125, 125, 0.03);
+    }
+
+    .custom-table th:first-child { border-top-left-radius: 12px; }
+    .custom-table th:last-child { border-top-right-radius: 12px; }
+
+    .custom-table td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .custom-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .dl-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .dl-badge.oct15 {
+      background: rgba(239, 68, 68, 0.14);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .dl-badge.nov1 {
+      background: rgba(249, 115, 22, 0.12);
+      color: #f97316;
+      border: 1px solid rgba(249, 115, 22, 0.25);
+    }
+
+    .dl-badge.nov15 {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .dl-badge.nov30 {
+      background: rgba(59, 130, 246, 0.12);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    .dl-badge.dec1 {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .dl-badge.nov5 {
+      background: rgba(234, 88, 12, 0.12);
+      color: #ea580c;
+      border: 1px solid rgba(234, 88, 12, 0.25);
+    }
+
+    .dl-badge.rolling {
+      background: rgba(139, 92, 246, 0.12);
+      color: #8b5cf6;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .type-pill {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: rgba(125, 125, 125, 0.08);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .school-name {
+      font-weight: 600;
+      font-size: 0.98rem;
+      color: var(--text-primary);
+    }
+
+    .rl-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .rl-tag.needed {
+      background: rgba(191, 162, 140, 0.18);
+      color: var(--text-primary);
+      border: 1px solid rgba(191, 162, 140, 0.4);
+    }
+
+    .rl-tag.none {
+      background: rgba(125, 125, 125, 0.07);
+      color: var(--text-secondary);
+    }
+
+    .back-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(125, 125, 125, 0.08);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+
+    .counselor-callout {
+      margin-top: 24px;
+      padding: 16px 20px;
+      border-radius: 14px;
+      background: rgba(191, 162, 140, 0.1);
+      border-left: 4px solid #bfa28c;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .table-container { padding: 14px 10px; }
+      .custom-table th, .custom-table td { padding: 10px 8px; font-size: 0.82rem; }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .email-pill { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部悬浮导航栏 -->
+  <header class="container">
+    <div class="header-wrapper">
+      <!-- 左侧：返回作品集按钮 -->
+      <div class="header-left">
+        <a href="index.html" class="back-nav-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          返回 Lingqi Mo 的作品集
+        </a>
+      </div>
+      
+      <!-- 右侧：中英切换、深浅色主题、邮箱胶囊 -->
+      <div class="header-actions" style="margin-left: auto;">
+        <div class="lang-switch">
+          <span class="lang-btn" onclick="window.location.href='../en/info.html'">EN</span>
+          <span class="lang-btn active" onclick="window.location.href='info.html'">中</span>
+        </div>
+        <button id="theme-toggle" class="action-btn-circle" title="切换主题">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/>
+            <path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+        <div class="email-pill">
+          <span class="email-text">moss104088@gmail.com</span>
+          <button class="action-btn-circle" title="复制邮箱" onclick="navigator.clipboard.writeText('moss104088@gmail.com')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content" style="padding-top: 108px;">
+    
+    <!-- 关键指标概览 -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <span class="label">申请人</span>
+        <span class="value">莫令琪 (Lingqi Mo)</span>
+        <span class="subtext">Centennial High School, MD</span>
+      </div>
+      <div class="summary-card">
+        <span class="label">首选专业方向</span>
+        <span class="value target-major-val">计算机工程 / 电子电气工程 (CE / EE)</span>
+        <div class="target-action-row">
+          <button type="button" class="target-btn" onclick="openTargetModal('why')">
+            <span>Why?</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </button>
+          <button type="button" class="target-btn" onclick="openTargetModal('goal')">
+            <span>Goal</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="summary-card">
+        <span class="label">最早截止日期</span>
+        <span class="value" style="color: #ef4444;">10月15日, 2026</span>
+        <span class="subtext">Early Action (UNC 北卡教堂山)</span>
+      </div>
+      <div class="summary-card">
+        <span class="label">规划大学总数</span>
+        <span class="value">20 所目标大学</span>
+        <span class="subtext">EA / Priority / CSU / Rolling</span>
+      </div>
+    </div>
+
+    <!-- 申请表格容器 -->
+    <div class="table-container">
+      <div class="table-header-bar">
+        <div class="table-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="M3 9h18"/>
+            <path d="M9 21V9"/>
+          </svg>
+          大学申请截止日期与推荐信要求汇总表
+        </div>
+      </div>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>截止日期</th>
+            <th>申请类型</th>
+            <th>目标大学</th>
+            <th>推荐信要求 (RLs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 10/15 UNC -->
+          <tr>
+            <td><span class="dl-badge oct15">10 / 15</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">北卡罗来纳大学教堂山分校 (UNC)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <!-- 11/01 Non-Restrictive EA -->
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">宾夕法尼亚州立大学 (Penn State / PSU)</strong></td>
+            <td><span class="rl-tag none">0 + 0</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">马里兰大学帕克分校 (UMD)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">伊利诺伊大学厄巴纳-香槟分校 (UIUC)</strong></td>
+            <td><span class="rl-tag none">0 + 0</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">印第安纳大学伯明顿分校 (IUB)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">罗切斯特理工学院 (RIT)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">北卡罗来纳州立大学 (North Carolina State University)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">纽约州立大学石溪分校 (Stony Brook University)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov1">11 / 01</span></td>
+            <td><span class="type-pill">Non-Restrictive EA</span></td>
+            <td><strong class="school-name">明尼苏达大学双城分校 (University of Minnesota - Twin Cities)</strong></td>
+            <td><span class="rl-tag none">0 + 0 + 0</span></td>
+          </tr>
+
+          <!-- 11/05 EA -->
+          <tr>
+            <td><span class="dl-badge nov5">11 / 05</span></td>
+            <td><span class="type-pill">Early Action</span></td>
+            <td><strong class="school-name">马萨诸塞大学阿默斯特分校 (UMass Amherst)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <!-- 11/15 Priority / EA -->
+          <tr>
+            <td><span class="dl-badge nov15">11 / 15</span></td>
+            <td><span class="type-pill">Regular / Priority</span></td>
+            <td><strong class="school-name">华盛顿大学西雅图分校 (UW)</strong></td>
+            <td><span class="rl-tag none">0 + 0 + 0</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov15">11 / 15</span></td>
+            <td><span class="type-pill">Early Action</span></td>
+            <td><strong class="school-name">弗吉尼亚理工大学 (Virginia Tech / VT)</strong></td>
+            <td><span class="rl-tag none">0 + 0 + 0</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov15">11 / 15</span></td>
+            <td><span class="type-pill">Early Action</span></td>
+            <td><strong class="school-name">伊利诺伊理工学院 (Illinois Institute of Technology)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <!-- 11/30 CSU 加州州立系统 -->
+          <tr>
+            <td><span class="dl-badge nov30">11 / 30</span></td>
+            <td><span class="type-pill">加州州立大学 (CSU)</span></td>
+            <td><strong class="school-name">圣何塞州立大学 (SJSU)</strong></td>
+            <td><span class="rl-tag none">不需要推荐信 (No RLs)</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov30">11 / 30</span></td>
+            <td><span class="type-pill">加州州立大学 (CSU)</span></td>
+            <td><strong class="school-name">加州州立理工大学波莫纳分校 (Cal Poly Pomona)</strong></td>
+            <td><span class="rl-tag none">不需要推荐信 (No RLs)</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge nov30">11 / 30</span></td>
+            <td><span class="type-pill">加州州立大学 (CSU)</span></td>
+            <td><strong class="school-name">加州州立理工大学圣路易斯奥比斯波分校 (Cal Poly SLO)</strong></td>
+            <td><span class="rl-tag none">不需要推荐信 (No RLs)</span></td>
+          </tr>
+
+          <!-- 12/01 优先批次 -->
+          <tr>
+            <td><span class="dl-badge dec1">12 / 01</span></td>
+            <td><span class="type-pill">优先批次 (Priority)</span></td>
+            <td><strong class="school-name">德克萨斯大学达拉斯分校 (UT Dallas)</strong></td>
+            <td><span class="rl-tag needed">1 + 1 + 1</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge dec1">12 / 01</span></td>
+            <td><span class="type-pill">优先批次 / EA</span></td>
+            <td><strong class="school-name">犹他大学 (The University of Utah)</strong></td>
+            <td><span class="rl-tag none">不需要推荐信 (No RLs)</span></td>
+          </tr>
+
+          <!-- 滚动录取 Rolling -->
+          <tr>
+            <td><span class="dl-badge rolling">Rolling</span></td>
+            <td><span class="type-pill">滚动录取 (Rolling)</span></td>
+            <td><strong class="school-name">亚利桑那州立大学 (Arizona State University)</strong></td>
+            <td><span class="rl-tag none">不需要推荐信 (No RLs)</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="dl-badge rolling">Rolling</span></td>
+            <td><span class="type-pill">滚动录取 (Rolling)</span></td>
+            <td><strong class="school-name">爱荷华州立大学 (Iowa State University)</strong></td>
+            <td><span class="rl-tag none">不需要推荐信 (No RLs)</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="counselor-callout">
+        <strong>📌 升学顾问与任课老师填写须知：</strong>
+        <p style="margin: 4px 0 0;">标有 <code>1+1+1</code> 的学校，通常对应 1 份升学顾问（Counselor）推荐信 + 1 份主要学科老师（Teacher）推荐信 + 1 份附加/可选推荐人；标有 <code>0+0</code>、<code>0+0+0</code> 或 <code>No RLs</code> 的学校，不接受或无需提交推荐信。</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Protocol / Case Study Modal Overlay (Target Detail Modal: Why & Goal) -->
+  <div class="target-modal-overlay" id="targetModal">
+    <div class="target-modal-container">
+      <div class="target-modal-header">
+        <div class="target-modal-header-left">
+          <span class="target-modal-title">计算机工程与电子电气工程 (CE / EE)</span>
+          <div class="target-modal-tabs">
+            <button type="button" class="target-tab-btn active" id="tabWhyBtn" onclick="switchTargetTab('why')">
+              <span>为什么选择 CE / EE？</span>
+            </button>
+            <button type="button" class="target-tab-btn" id="tabGoalBtn" onclick="switchTargetTab('goal')">
+              <span>未来学术与职业目标</span>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="target-modal-close" onclick="closeTargetModal()" aria-label="关闭">&times;</button>
+      </div>
+
+      <div class="target-modal-body">
+        <!-- Pane: Why -->
+        <div id="paneWhy" class="target-modal-pane active">
+          <div class="target-essay-body">
+            <p>我最初并不是从硬件或电子工程开始的。高中前期，我最感兴趣的是 User Experience、Human-Computer Interaction 和软件开发，因为我喜欢从一个很具体的问题开始：人为什么觉得某个系统难用？一个功能为什么明明存在，却没有真正帮助到使用它的人？我习惯先观察人的行为，再去调整界面、信息结构和交互方式，最后把想法做成真正可以使用的产品。</p>
+            
+            <p><strong>CHSchat.xyz</strong> 是这种思路发展得最完整的项目之一。</p>
+            
+            <p>它最开始可以被理解成一个面向 Centennial High School 学生的 communication platform，但在不断开发的过程中，我逐渐不再把它看成一个单独的聊天软件。我希望把学校里原本分散在不同网站、页面和流程中的东西重新组织到一个更统一的系统里。因此，CHSchat 后来逐渐包含了 school news、club information、events、messaging、Eagle Time、grade calculator、cafeteria menu、peer tutoring、suggestions、lost and found、marketplace，以及面向未来扩展的 developer tools。登录系统也需要适应学校真实使用的 HCPSS Microsoft accounts，而不是只在我自己的开发环境里“能够登录”就算完成。</p>
+            
+            <p>这个项目让我第一次非常明显地感受到：设计一个体验更好的产品，和让这个产品真正进入现实环境，是两件完全不同的事。</p>
+            
+            <p>在电脑上，我可以不断修改页面、功能和交互。我甚至可以根据一个老师的实际需求去定制某一部分软件。但当我真正考虑怎样让这样的系统被更多学校使用时，我开始碰到一些单靠 UX 或 web development 很难解决的问题。</p>
+            
+            <p>原有平台已经储存了大量数据，学校不会因为一个新软件体验更好，就轻易放弃原来的系统；不同学校使用的账号体系、设备和技术环境也完全不同。在 Centennial，Chromebook 和学校账号已经成为数字学习环境的一部分，但当我重新考虑中国学校的使用场景时，情况又不一样。有些学校没有一套可以让每个学生随时使用的 Chromebook 或类似设备。一个建立在“每个人都有自己的浏览器和个人设备”这个假设上的产品，即使软件本身设计得很好，也可能从一开始就没有部署的条件。</p>
+            
+            <p>这件事改变了我理解“User Experience”的方式。</p>
+            <p>以前我会把问题想成：<strong>怎样把这个 interface 做得更好？</strong></p>
+            <p>后来我开始问：<strong>如果这个 interface 根本没有合适的设备承载它怎么办？如果真正限制用户的不是页面，而是他们手里根本没有一个适合完成这件事的工具怎么办？</strong></p>
+            
+            <p>这也是我开始接触硬件的原因。</p>
+            
+            <p>我尝试制作价格更低、功能更专一的课堂答题器，以及使用 e-ink display 的沟通设备。与其要求学校先拥有一套完整的个人计算设备，我开始思考能不能针对一个具体需求，直接设计一个足够便宜、足够简单、可以大量部署的 physical device。</p>
+            
+            <p>目前这些原型仍然大量依赖现成的 microcontrollers、display modules 和其他 off-the-shelf components。我可以把它们连接起来，编写软件，让一个 prototype 工作，但这个过程反而让我越来越清楚地看到自己的知识边界。如果我要把几个开发板和模块拼成的原型进一步变成一个真正紧凑、稳定、低成本、适合大量制造的产品，我不能永远停留在 assembly 的层面。</p>
+            
+            <p>我需要理解 PCB 是怎样设计的，电路为什么这样连接，电子元器件怎样选择，电源和通信怎样处理，firmware 怎样与底层硬件配合，以及软件、电子系统和最终的 physical form 怎样被设计成同一个产品。</p>
+            
+            <p>因此，对我来说，从 HCI/UX 转向 Computer Engineering / Electrical Engineering 并不是放弃过去的方向。恰恰相反，是我在不断把过去的问题往更底层追问。</p>
+            
+            <div class="target-essay-quote">
+              我从“这个界面怎样更好用”，走到了“这个系统怎样真正被采用”，最后又走到了“支撑这个体验的设备本身应该怎样被设计”。
+            </div>
+            
+            <p>Computer Engineering 吸引我的地方，正是它位于 software 与 hardware 的交界处；Electrical Engineering 则能够让我真正理解 circuits、electronics 和构成这些设备的底层原理。这两条路径都能补上我现在最明显缺少的一块能力。</p>
+          </div>
+        </div>
+
+        <!-- Pane: Goal -->
+        <div id="paneGoal" class="target-modal-pane">
+          <div class="target-essay-body">
+            <p>我的目标并不是离开 User Experience，成为一个只关注电路参数或者只关注代码是否运行的工程师。</p>
+            
+            <p>我反而希望保留自己已经形成的那种工作方式：先找到人的问题，再决定应该用什么技术解决，而不是先拥有一种技术，再寻找可以把它放进去的地方。</p>
+            
+            <p>CHSchat 对我来说是一个很重要的起点，因为它让我学会怎样从学生和老师每天真实经历的摩擦出发，把很多零散的问题重新组织成一个系统。但它也让我认识到，一个产品最终是否有价值，并不只取决于它的 interface 是否直观。成本、设备条件、兼容性、维护、数据迁移、学校现有的 infrastructure，甚至一个老师愿不愿意改变自己已经使用多年的 workflow，都可能决定一个设计最终能不能存在于现实中。</p>
+            
+            <p>所以大学阶段，我希望补上自己目前无法独立完成的工程部分：circuits、PCB design、embedded systems、computer architecture、electronics、firmware，以及 hardware-software integration。</p>
+            
+            <p>更长期来看，我希望拥有一种从问题一直做到产品底层的能力。</p>
+            
+            <p>当我发现一个老师需要更简单的课堂互动方式时，我不希望自己的选择只有“再做一个网页”；当某个学校没有足够的个人计算设备时，我也不希望只能得出“这个软件无法部署”的结论。我希望自己能够继续往下设计——改变通信方式，改变设备结构，重新考虑成本，甚至重新设计承载这个 interaction 的硬件本身。</p>
+            
+            <p>我想做的不是为了证明技术复杂而复杂的产品。</p>
+            
+            <p>我更感兴趣的是那些看起来也许很普通，但能够真正进入人的生活的东西：一个学校买得起的课堂设备，一个老师不需要重新学习整套系统就能使用的工具，一个学生拿起来几秒钟就知道应该怎么操作的产品。</p>
+            
+            <p>最终，我希望把 UX/HCI 对人的理解、software development 的实现能力，以及 CE/EE 对 physical technology 的控制能力 放在同一个过程中。</p>
+            
+            <p>对我来说，真正完整的产品设计应该可以从一句：</p>
+            <p style="padding-left: 16px; font-weight: 700; color: var(--text-color, #332b25); font-size: 1.08rem;">“这里为什么这么难用？”</p>
+            
+            <p>一直走到：</p>
+            <p style="padding-left: 16px; font-weight: 700; color: var(--text-color, #332b25); font-size: 1.08rem;">“那我们能不能重新设计它？”</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 主题切换支持
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+    }
+
+    // 专业详情弹窗控制
+    function openTargetModal(tab) {
+      const modal = document.getElementById('targetModal');
+      if (!modal) return;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      switchTargetTab(tab || 'why');
+    }
+
+    function closeTargetModal() {
+      const modal = document.getElementById('targetModal');
+      if (!modal) return;
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function switchTargetTab(tab) {
+      const paneWhy = document.getElementById('paneWhy');
+      const paneGoal = document.getElementById('paneGoal');
+      const tabWhyBtn = document.getElementById('tabWhyBtn');
+      const tabGoalBtn = document.getElementById('tabGoalBtn');
+
+      if (tab === 'goal') {
+        if (paneWhy) paneWhy.classList.remove('active');
+        if (paneGoal) paneGoal.classList.add('active');
+        if (tabWhyBtn) tabWhyBtn.classList.remove('active');
+        if (tabGoalBtn) tabGoalBtn.classList.add('active');
+      } else {
+        if (paneWhy) paneWhy.classList.add('active');
+        if (paneGoal) paneGoal.classList.remove('active');
+        if (tabWhyBtn) tabWhyBtn.classList.add('active');
+        if (tabGoalBtn) tabGoalBtn.classList.remove('active');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('targetModal');
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeTargetModal();
+        });
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeTargetModal();
+      });
+    });
+  </script>
+</body>
+</html>

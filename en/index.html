@@ -25,7 +25,7 @@
   </script>
   
   <!-- CSS Styles -->
-  <link rel="stylesheet" href="../css/styles.css?v=24">
+  <link rel="stylesheet" href="../css/styles.css?v=29">
 </head>
 <body>
   
@@ -563,19 +563,16 @@
             <div class="stats-section">
               <div class="stats-section-label" data-i18n="dash.bestToefl">Best TOEFL</div>
               <div class="toefl-hero-row">
-                <div class="toefl-hero-total">102</div>
+                <div class="toefl-hero-total">100</div>
                 <div class="toefl-hero-breakdown">
                   <div class="toefl-hero-chip"><span class="toefl-chip-letter">R</span><span class="toefl-chip-score">24</span></div>
-                  <div class="toefl-hero-chip"><span class="toefl-chip-letter">L</span><span class="toefl-chip-score">28</span></div>
+                  <div class="toefl-hero-chip"><span class="toefl-chip-letter">L</span><span class="toefl-chip-score">26</span></div>
                   <div class="toefl-hero-chip"><span class="toefl-chip-letter">S</span><span class="toefl-chip-score">26</span></div>
                   <div class="toefl-hero-chip"><span class="toefl-chip-letter">W</span><span class="toefl-chip-score">24</span></div>
                 </div>
                 <div class="toefl-hero-meta">
                   <span class="toefl-hero-date">Dec 2025</span>
                 </div>
-              </div>
-              <div class="toefl-hero-footnote" data-i18n="dash.toeflNote">
-                * Note: The Listening 28 score was taken under the NEEC system, which is separate from ets.org TOEFL records; the MyBest score on ETS is officially recorded as 100.
               </div>
             </div>
 
@@ -795,8 +792,42 @@
 
   </main>
 
+  <!-- First-Visit Dynamic Hint for Counselor/Teacher Portal (Desktop Only) -->
+  <div id="counselorHint" class="counselor-floating-hint">
+    <div class="hint-arrow-wrap">
+      <svg class="hint-arrow-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="4" x2="12" y2="18"/>
+        <polyline points="18 12 12 18 6 12"/>
+      </svg>
+    </div>
+    <span class="hint-text" data-i18n="dash.counselorHint">Information For Counselor/Teacher</span>
+    <button type="button" class="hint-close-btn" id="dismissCounselorHint" aria-label="Close hint" title="Close hint">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Floating Counselor & Teacher Portal Button -->
+  <a href="info.html" class="floating-counselor-btn" id="floatingCounselorBtn" title="Information For Counselor / Teacher">
+    <div class="counselor-btn-icon">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+    </div>
+    <span class="counselor-btn-text">Information For Counselor/Teacher</span>
+    <div class="counselor-btn-arrow">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </div>
+  </a>
+
   <!-- JS Scripts -->
-  <script src="../js/data.js?v=24"></script>
-  <script src="../js/app.js?v=24"></script>
+  <script src="../js/data.js?v=28"></script>
+  <script src="../js/app.js?v=28"></script>
 </body>
 </html>
