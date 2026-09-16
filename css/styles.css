@@ -3246,14 +3246,6 @@ tr:last-child td {
   transform: translateX(2px);
 }
 
-/* Ensure desktop cards never overlap with bottom-right floating button */
-@media (min-width: 1025px) and (max-width: 1560px) {
-  .container {
-    max-width: calc(100vw - 320px) !important;
-    margin-right: 280px !important;
-    margin-left: auto !important;
-  }
-}
 
 /* Dynamic First-Visit Hint Bubble (Desktop Only) - Hidden by default, shown only if NOT dismissed */
 .counselor-floating-hint {
